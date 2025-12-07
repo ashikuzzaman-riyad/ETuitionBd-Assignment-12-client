@@ -1,1 +1,13 @@
 @import "tailwindcss";
+
+ @plugin "daisyui" {
+  themes: light --default, dark --prefersdark;
+  themes: light --default;
+ }
+ 
+ a {
+    @apply text-black
+ }
+ a.active{
+  @apply underline text-green-600
+}
