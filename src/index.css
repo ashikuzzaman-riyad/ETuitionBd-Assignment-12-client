@@ -5,9 +5,5 @@
   themes: light --default;
  }
  
- a {
-    @apply text-black
- }
- a.active{
-  @apply underline text-green-600
-}
+ 
+ 

@@ -3,8 +3,7 @@ import { useState } from "react";
 import { TbXboxX } from "react-icons/tb";
 import { CiMenuBurger } from "react-icons/ci";
 import { useAuth } from "../hooks/useAuth";
-import { Link } from "react-router";
-
+import { Link, NavLink } from "react-router";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -28,19 +27,35 @@ const Navbar = () => {
   ];
 
   return (
-     <nav className="bg-white shadow sticky top-0 z-50">
+    <nav className="bg-white shadow sticky top-0 z-50">
       <div className="container mx-auto flex items-center justify-between py-3 px-5 lg:px-20">
         {/* Logo */}
-        <div className="flex items-center gap-2 text-green-500 text-2xl font-bold">
-          <h1>Eco-Track</h1>
+        <div className="flex gap-5 items-center text-green-500 text-2xl font-bold hidden md:block">
+          <Link to="/" className="flex items-center gap-2">
+            <img
+              className="w-[50px]"
+              src="https://i.ibb.co/RTk6zL5F/text-books-library-isolated-icon-24877-83372.jpg"
+              alt="Logo"
+            />
+            <h1>E-TuitionBd</h1>
+          </Link>
         </div>
 
         {/* Menu Links */}
         <ul className="hidden md:flex gap-6 font-medium">
           {links.map((link) => (
-            <li key={link.name} className="hover:text-green-500 transition-colors">
-              <Link to={link.to}>{link.name}</Link>
-            </li>
+            <NavLink
+        to={link.to}
+        className={({ isActive }) =>
+          `px-3 py-1 rounded-md transition-all duration-300 ${
+            isActive
+              ? "bg-green-500 text-white font-semibold shadow-md"
+              : "text-gray-800 hover:bg-green-500 hover:text-white"
+          }`
+        }
+      >
+        {link.name}
+      </NavLink>
           ))}
         </ul>
 
@@ -55,7 +70,10 @@ const Navbar = () => {
         <div className="flex items-center gap-4 relative">
           {user ? (
             <div className="relative">
-              <button onClick={() => setProfileOpen(!profileOpen)} className="focus:outline-none">
+              <button
+                onClick={() => setProfileOpen(!profileOpen)}
+                className="focus:outline-none"
+              >
                 <img
                   src={user.photoURL || "https://via.placeholder.com/40"}
                   alt="User"
@@ -66,7 +84,9 @@ const Navbar = () => {
               {/* Profile Dropdown */}
               <ul
                 className={`absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden transition-all duration-300 ${
-                  profileOpen ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none"
+                  profileOpen
+                    ? "opacity-100 scale-100"
+                    : "opacity-0 scale-95 pointer-events-none"
                 }`}
               >
                 <li>
@@ -117,12 +137,17 @@ const Navbar = () => {
       {/* Mobile Menu */}
       <ul
         className={`md:hidden bg-white border-t border-gray-200 shadow-lg flex flex-col gap-3 px-5 py-4 transition-all duration-300 ${
-          open ? "max-h-screen opacity-100" : "max-h-0 opacity-0 overflow-hidden"
+          open
+            ? "max-h-screen opacity-100"
+            : "max-h-0 opacity-0 overflow-hidden"
         }`}
       >
         {links.map((link) => (
           <li key={link.name} className="py-2">
-            <Link to={link.to} className="block text-gray-800 hover:text-green-500">
+            <Link
+              to={link.to}
+              className="block text-gray-800 hover:text-green-500"
+            >
               {link.name}
             </Link>
           </li>
