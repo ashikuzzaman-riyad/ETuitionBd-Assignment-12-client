@@ -11,6 +11,9 @@ import MyTuitions from "../dashboard/student/MyTuitions";
 import Payments from "../dashboard/student/Payments";
 import AppliedTutors from "../dashboard/student/AppliedTutors";
 import MyApplications from "../dashboard/tutor/MyApplications";
+import UserManagement from "../dashboard/admin/UserManagement";
+import AllPaymentHistory from "../dashboard/admin/AllPaymentHistory";
+import RevenueHistory from "../dashboard/admin/RevenueHistory";
 
 const router = createBrowserRouter([
   {
@@ -59,6 +62,21 @@ const router = createBrowserRouter([
       {
         path: "my-application",
         element: <MyApplications></MyApplications>
+
+      },
+      {
+        path: "user-management",
+        element: <UserManagement></UserManagement>
+
+      },
+      {
+        path: "all-payment-history",
+        element: <AllPaymentHistory></AllPaymentHistory>
+
+      },
+      {
+        path: "revenue-history",
+        element: <RevenueHistory></RevenueHistory>
 
       },
       {

@@ -220,14 +220,14 @@ const DashboardLayout = () => {
             <li>
               <button
                 className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                data-tip="User"
+                data-tip="User Management"
               >
                 <NavLink
                   className="hover:text-green-600"
-                  to="/dashboard/user"
+                  to="/dashboard/user-management"
                 >
                   <FaUserCog className="my-1.5 inline-block size-4" />
-                  <span className="is-drawer-close:hidden">User</span>
+                  <span className="is-drawer-close:hidden">User Management</span>
                 </NavLink>
               </button>
             </li>
