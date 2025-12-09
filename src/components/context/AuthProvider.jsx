@@ -38,6 +38,7 @@ const AuthProvider = ({ children }) => {
   };
 
   const updateUser = (updateData) => {
+    setLoading(true)
     return updateProfile(auth.currentUser, updateData);
   };
 
@@ -47,6 +48,7 @@ const AuthProvider = ({ children }) => {
   };
 
   const logOut = () => {
+
     return signOut(auth);
   };
 

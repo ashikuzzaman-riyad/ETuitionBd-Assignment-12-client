@@ -1,22 +1,65 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import SocialLogin from "./SocialLogin";
+import { useAuth } from "../../../hooks/useAuth";
+import axios from "axios";
 
 const Register = () => {
   const [role, setRole] = useState("student");
-
+  const location = useLocation();
+  const navigate = useNavigate();
+  //   const axiosSecure = useSecureAxios();
+  const [loading, setLoading] = useState(false);
   const {
     register,
     handleSubmit,
 
     formState: { errors },
   } = useForm();
+  const { createUser, updateUser } = useAuth();
 
   const onSubmit = (data) => {
     const finalData = { ...data, role };
-    console.log(finalData);
+    const profileImg = finalData.photo[0];
+    console.log(profileImg);
+    console.log("after register", finalData.photo[0]);
+
+
+    createUser(finalData.email, finalData.password)
+      .then((result) => {
+        console.log(result.user);
+
+        // 1. store the image in form data
+        const formData = new FormData();
+        formData.append("image", profileImg);
+
+        // 2. send the photo to store and get the ul
+        const image_API_URL = `https://api.imgbb.com/1/upload?key=${
+          import.meta.env.VITE_img_host
+        }`;
+
+        axios.post(image_API_URL, formData).then((res) => {
+          console.log("after image upload", res.data.data.url);
+
+          // update user profile to firebase
+          const userProfile = {
+            displayName: finalData.name,
+            photoURL: res.data.data.url,
+          };
+
+          updateUser(userProfile)
+            .then(() => {
+              console.log("user profile updated done.");
+              navigate(location.state || "/");
+            })
+            .catch((error) => console.log(error));
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -89,21 +132,12 @@ const Register = () => {
           </div>
           {/* photo */}
           <div>
-            <label className="text-gray-700 font-semibold">Email Address</label>
+            <label className="text-gray-700 font-semibold">Photo</label>
             <input
-               type="file"
-              {...register("email", {
-                required: "Email is required",
-                pattern: /^\S+@\S+\.\S+$/,
-              })}
-              placeholder="example@gmail.com"
+              type="file"
+              {...register("photo")}
               className="w-full file-input  rounded-lg focus:ring-2 focus:ring-green-400 focus:outline-none"
             />
-            {errors.email && (
-              <p className="text-rose-600 text-sm mt-1">
-                Valid email is required
-              </p>
-            )}
           </div>
 
           {/* Password */}
