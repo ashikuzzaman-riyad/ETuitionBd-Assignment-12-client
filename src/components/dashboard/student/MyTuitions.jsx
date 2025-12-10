@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { FaEdit } from "react-icons/fa";
 import { MdDeleteOutline } from "react-icons/md";
 import Swal from "sweetalert2";
+import { Link } from "react-router";
 
 const MyTuitions = () => {
   const { user } = useAuth();
@@ -158,6 +159,7 @@ const MyTuitions = () => {
                 {/* Actions (Edit and Delete) */}
                 <td className="px-6 py-4 whitespace-nowrap flex text-center text-sm font-medium">
                   {/* Edit Button */}
+                  <Link to={`/dashboard/upadet-tuitions/${student._id}`}>
                   <button
                     // onClick={() => handleEdit(student)}
                     className="text-indigo-600 flex  justify-center items-center gap-1 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-4 transition duration-150"
@@ -168,6 +170,7 @@ const MyTuitions = () => {
                     </span>
                     <span className="sr-only sm:not-sr-only"> Edit</span>
                   </button>
+                  </Link>
 
                   {/* Delete Button */}
                   <button

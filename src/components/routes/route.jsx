@@ -15,16 +15,39 @@ import UserManagement from "../dashboard/admin/UserManagement";
 import AllPaymentHistory from "../dashboard/admin/AllPaymentHistory";
 import RevenueHistory from "../dashboard/admin/RevenueHistory";
 import PrivateRoute from "./PrivateRoute";
+import UpadetTuitions from "../dashboard/student/UpadetTuitions";
+import TuitionCard from "../cards/TuitionCard";
+import About from "../pages/Home/About/About";
+import Contact from "../pages/Home/Contact/Contact";
+import ErrorPage from "../pages/Home/Error/ErrorPage";
+import VewUserProfile from "../dashboard/admin/VewUserProfile";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout></MainLayout>,
+    errorElement:<ErrorPage></ErrorPage>,
     children: [
       {
         index: true,
         element: <Home></Home>,
       },
+      {
+        path:'/tuition-card',
+        element:<TuitionCard></TuitionCard>
+      },
+      {
+        path:'/tutors',
+        element: <TuitionCard></TuitionCard>
+      },
+      {
+        path:'/about',
+        element: <About></About>
+      },
+      {
+        path:'/contact',
+        element:<Contact></Contact>
+      }
     ],
   },
 
@@ -81,10 +104,27 @@ const router = createBrowserRouter([
 
       },
       {
-        path: "profile-setting",
-        element: <ProfileSettings></ProfileSettings>
+        path: "upadet-tuitions/:id",
+        element: <UpadetTuitions></UpadetTuitions>,
+        loader: ({ params }) => 
+  fetch(`http://localhost:5000/new-tuitions/${params.id}`)
+    
+
 
       },
+      {
+        path:'vew-user/:id',
+        element: <VewUserProfile></VewUserProfile>,
+         loader: ({params}) => fetch(`http://localhost:5000/users/${params.id}`)
+      },
+     
+      {
+        path: "profile-setting",
+        element: <ProfileSettings></ProfileSettings>,
+        
+
+      },
+      
     ],
   },
 ]);

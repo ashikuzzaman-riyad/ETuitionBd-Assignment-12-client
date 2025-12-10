@@ -1,8 +1,19 @@
 import React, { useState } from "react";
+import { useLoaderData, useNavigate } from "react-router";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
+import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "../../hooks/useAuth";
+import Loading from "../../shared/Loading";
 
 const ProfileSettings = () => {
+   const data = useLoaderData()
   const [openProfile, setOpenProfile] = useState(false);
   const [openPassword, setOpenPassword] = useState(false);
+  const {user, loading} = useAuth()
+  console.log(user)
+  if(loading) return <Loading></Loading>
+
+ 
 
   return (
     <div className="min-h-3/3 flex items-center justify-center  p-4">
@@ -10,13 +21,13 @@ const ProfileSettings = () => {
         {/* Profile Card */}
         <div className="text-center space-y-4">
           <img
-            src="https://i.pravatar.cc/120?img=32"
+            src={user?.photoURL}
             alt="Profile"
             className="w-24 h-24 mx-auto rounded-full border-4 border-green-500"
           />
-          <h2 className="text-2xl font-bold text-green-600">Riyad Hossen</h2>
-          <p className="text-gray-600 text-sm">riyad@example.com</p>
-          <p className="text-gray-600 text-sm">01XXXXXXXXX</p>
+          <h2 className="text-2xl font-bold text-green-600">{user?.displayName}</h2>
+          <p className="text-gray-600 text-sm">{user?.email}</p>
+          <p className="text-gray-600 text-sm">{user?.phone}</p>
 
           <div className="flex flex-col sm:flex-row justify-center gap-3 mt-4">
             <button
@@ -42,7 +53,7 @@ const ProfileSettings = () => {
 
               <div>
                 <label className="block text-sm font-medium mb-1 text-green-800">
-                  Full Name
+                  {user?.name}
                 </label>
                 <input
                   className="w-full border border-green-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-green-400"
@@ -52,7 +63,7 @@ const ProfileSettings = () => {
 
               <div>
                 <label className="block text-sm font-medium mb-1 text-green-800">
-                  Email
+                  {user?.email}
                 </label>
                 <input
                   type="email"
@@ -63,7 +74,7 @@ const ProfileSettings = () => {
 
               <div>
                 <label className="block text-sm font-medium mb-1 text-green-800">
-                  Phone
+                  {user?.phone}
                 </label>
                 <input
                   className="w-full border border-green-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-green-400"
