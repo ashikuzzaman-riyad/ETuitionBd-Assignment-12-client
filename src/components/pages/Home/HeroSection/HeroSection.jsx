@@ -18,7 +18,7 @@ const HeroSection = () => {
   ];
     return (
       
-<div className="container mx-auto py-8 relative">
+<div className="container mx-auto pt-20 relative">
 
   
 

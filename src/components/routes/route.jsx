@@ -14,6 +14,7 @@ import MyApplications from "../dashboard/tutor/MyApplications";
 import UserManagement from "../dashboard/admin/UserManagement";
 import AllPaymentHistory from "../dashboard/admin/AllPaymentHistory";
 import RevenueHistory from "../dashboard/admin/RevenueHistory";
+import PrivateRoute from "./PrivateRoute";
 
 const router = createBrowserRouter([
   {
@@ -37,7 +38,7 @@ const router = createBrowserRouter([
   },
   {
     path: "dashboard",
-    element: <DashboardLayout></DashboardLayout>,
+    element: <PrivateRoute><DashboardLayout></DashboardLayout></PrivateRoute>,
     children: [
       {
         path: "new-tuitions",

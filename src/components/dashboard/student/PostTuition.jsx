@@ -1,14 +1,16 @@
+import { data } from "autoprefixer";
 import React from "react";
 import { useForm } from "react-hook-form";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
+import { Navigate, useNavigate } from "react-router";
+import Swal from "sweetalert2";
+import { useAuth } from "../../hooks/useAuth";
 
 const PostTuition = () => {
   // Removed formState: { errors } to simplify and remove error messages from UI
-  const { 
-    register, 
-    handleSubmit, 
-    reset, 
-  } = useForm();
-
+  const { register, handleSubmit, reset } = useForm();
+  const navigate = useNavigate();
+  const axiosSecure = useAxiosSecure();
   const subjects = [
     "Bangla",
     "English",
@@ -22,13 +24,34 @@ const PostTuition = () => {
     "Accounting",
     "Economics",
   ];
+  const {user} = useAuth()
 
   const classOptions = Array.from({ length: 10 }, (_, i) => i + 1);
 
   function onSubmit(data) {
-    console.log("Tuition post submitted", data);
-    alert("Tuition post submitted! Check console for payload.");
-    reset();
+     const newTuition = {
+    ...data,
+    status: "pending",
+    createdAt: new Date(),
+  };
+    axiosSecure
+      .post("/new-tuitions", newTuition)
+      .then((res) => {
+        console.log("after post data in parcels", res.data);
+        if (res.data.insertedId) {
+          navigate("/dashboard/my-tuitions");
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "Your Tuition has been added",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   return (
@@ -38,13 +61,12 @@ const PostTuition = () => {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Name  */}
         <div>
-          <label className="block text-sm font-medium mb-1">
-            Name 
-          </label>
+          <label className="block text-sm font-medium mb-1">Name</label>
           <input
-            {...register("name")}
+            {...register("studentName")}
             placeholder="Your name "
             className="w-full border rounded p-2"
+            defaultValue={user?.displayName}d
           />
         </div>
 
@@ -55,7 +77,7 @@ const PostTuition = () => {
           </label>
           <select
             // Validation remains active here
-            {...register("subjects", { required: "Please select a subject." })}
+            {...register("studentSubjects", { required: "Please select a subject." })}
             className="w-full border rounded p-2"
           >
             <option value="">Select one subject</option>
@@ -70,10 +92,12 @@ const PostTuition = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Class (Required) */}
           <div>
-            <label className="block text-sm font-medium mb-1">Class<span className="text-red-500">*</span></label>
+            <label className="block text-sm font-medium mb-1">
+              Class<span className="text-red-500">*</span>
+            </label>
             <select
               // Validation remains active here
-              {...register("class", { required: "Class is required." })}
+              {...register("studentClass", { required: "Class is required." })}
               className="w-full border rounded p-2"
             >
               <option value="">Select class (1-10)</option>
@@ -85,10 +109,12 @@ const PostTuition = () => {
 
           {/* Location (Required) */}
           <div>
-            <label className="block text-sm font-medium mb-1">Location<span className="text-red-500">*</span></label>
+            <label className="block text-sm font-medium mb-1">
+              Location<span className="text-red-500">*</span>
+            </label>
             <input
               // Validation remains active here
-              {...register("location", { required: "Location is required." })}
+              {...register("studentLocation", { required: "Location is required." })}
               placeholder="City / Area"
               className="w-full border rounded p-2"
             />
@@ -102,7 +128,7 @@ const PostTuition = () => {
               Budget (per month)<span className="text-red-500">*</span>
             </label>
             <input
-              {...register("budget", { 
+              {...register("studentBudget", {
                 required: "Budget is required.",
                 min: { value: 1, message: "Must be a positive number." },
                 valueAsNumber: true,
@@ -118,9 +144,9 @@ const PostTuition = () => {
             <label className="block text-sm font-medium mb-1">
               Preferred Mode<span className="text-red-500">*</span>
             </label>
-            <select 
+            <select
               // Validation remains active here
-              {...register("mode", { required: "Mode is required." })} 
+              {...register("studentMode", { required: "Mode is required." })}
               className="w-full border rounded p-2"
             >
               <option value="">Select mode</option>
@@ -138,7 +164,9 @@ const PostTuition = () => {
           </label>
           <textarea
             // Validation remains active here
-            {...register("details", { required: "Please describe your requirements." })}
+            {...register("studentDetails", {
+              required: "Please describe your requirements.",
+            })}
             rows={4}
             placeholder="Write any additional info (timing, experience preference, etc.)"
             className="w-full border rounded p-2"
@@ -149,18 +177,19 @@ const PostTuition = () => {
           {/* Contact (Required, Basic Pattern Validation) */}
           <div>
             <label className="block text-sm font-medium mb-1">
-              Contact (phone or email)<span className="text-red-500">*</span>
+              Student Email <span className="text-red-500">*</span>
             </label>
             <input
-              {...register("contact", { 
+              {...register("studentEmail", {
                 required: "Contact info is required.",
                 pattern: {
                   value: /^\S+@\S+\.\S+$|^\+?\d{10,15}$/,
-                  message: "Must be a valid email or phone number."
-                }
+                  message: "Must be a valid email or phone number.",
+                },
               })}
               placeholder="Phone or email"
               className="w-full border rounded p-2"
+              defaultValue={user?.email}
             />
           </div>
 
@@ -171,9 +200,12 @@ const PostTuition = () => {
             </label>
             <input
               // Validation remains active here
-              {...register("contact_time", { required: "Contact time preference is required." })}
+              {...register("contact_time", {
+                required: "Contact time preference is required.",
+              })}
               placeholder="e.g. After 6pm"
               className="w-full border rounded p-2"
+              
             />
           </div>
         </div>
@@ -187,7 +219,7 @@ const PostTuition = () => {
           </button>
           <button
             type="button"
-            onClick={() => reset()}
+            
             className="px-4 py-2 rounded-xl border hover:bg-gray-100 transition"
           >
             Reset

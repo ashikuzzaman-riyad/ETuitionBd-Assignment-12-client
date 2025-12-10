@@ -4,7 +4,7 @@ import { Bars } from "react-loader-spinner";
 const Loading = () => {
   return (
     <div className="h-screen mx-auto flex justify-center items-center">
-      render(
+      
       <Bars
         height="80"
         width="80"
@@ -14,7 +14,7 @@ const Loading = () => {
         wrapperClass=""
         visible={true}
       />
-      )
+      
     </div>
   );
 };

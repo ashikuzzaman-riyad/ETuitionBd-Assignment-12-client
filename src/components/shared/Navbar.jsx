@@ -1,17 +1,19 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { TbXboxX } from "react-icons/tb";
 import { CiMenuBurger } from "react-icons/ci";
 
 import { Link, NavLink } from "react-router";
 import { useAuth } from "../hooks/useAuth";
 import Logo from "./Logo";
+import { ThemeContext } from "../context/ThemeProvider";
+import { BsMoon, BsSun } from "react-icons/bs";
 
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const { user, logOut } = useAuth();
-
+  const { theme, toggleTheme } = useContext(ThemeContext);
   
 
   const links = [
@@ -20,7 +22,9 @@ const Navbar = () => {
     { name: "Tutors", to: "/tutors" },
     { name: "About", to: "/about" },
     { name: "Contact", to: "/contact" },
+    
   ];
+
  const handleLogOut = () => {
   logOut()
   .then(res => {
@@ -32,7 +36,7 @@ const Navbar = () => {
   return (
    <>
       {/* Fixed Navbar - Always stays on top */}
-      <nav className="fixed top-0 left-0 right-0 bg-white shadow-lg z-50">
+      <nav className="fixed top-0 left-0 right-0  shadow-lg z-50">
         <div className="container mx-auto flex items-center justify-between py-3 px-5 ">
 
           {/* Logo */}
@@ -57,8 +61,17 @@ const Navbar = () => {
                 }
               >
                 {link.name}
+                
+
               </NavLink>
             ))}
+            <button
+                onClick={toggleTheme}
+                // Border/Hover colors are already set for dark mode, which is great
+                className="p-2 rounded-full border border-gray-200 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+              >
+                {theme === "light" ? <BsMoon size={20} /> : <BsSun size={20} />}
+              </button>
           </ul>
 
           {/* Mobile Menu Button */}
