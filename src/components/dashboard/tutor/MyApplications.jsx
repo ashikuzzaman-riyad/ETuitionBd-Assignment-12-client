@@ -1,116 +1,105 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import { useAuth } from "../../hooks/useAuth";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
+import { useQuery } from "@tanstack/react-query";
 
 const MyApplications = () => {
-   const [applications, setApplications] = useState([
-    {
-      id: 1,
-      tutor: "Abdul Karim",
-      subject: "Math",
-      class: "8",
-      expectedSalary: "3500",
-      experience: "2 years",
-      status: "Pending",
-    },
-    {
-      id: 2,
-      tutor: "Sadia Rahman",
-      subject: "English",
-      class: "6",
-      expectedSalary: "3000",
-      experience: "1.5 years",
-      status: "Pending",
-    },
-    {
-      id: 3,
-      tutor: "Rakib Hossain",
-      subject: "Physics",
-      class: "10",
-      expectedSalary: "5000",
-      experience: "3 years",
-      status: "Confirmed",
-    },
-  ]);
+ 
 
-  // Update status
-  const updateStatus = (id, newStatus) => {
-    setApplications(
-      applications.map((app) =>
-        app.id === id ? { ...app, status: newStatus } : app
-      )
-    );
-  };
+  const { user } = useAuth();
+  const axiosSecure = useAxiosSecure();
+  const { data: tuition = [], refetch } = useQuery({
+    queryKey: ["myApplication", user?.email],
+    queryFn: async () => {
+      const res = await axiosSecure.get(
+        `/new-tuitions/status?tutorEmail=${user.email}&status=ongoing`
+      );
+      return res.data;
+    },
+  });
 
   return (
-    <div className="p-6 container mx-auto">
-      <h1 className="text-2xl font-bold mb-5">Tutor Applications</h1>
+   <div className="container mx-auto p-6">
+  <h1 className="text-3xl font-bold mb-8 text-gray-800">
+    My Tuition Applications
+  </h1>
 
-      <div className="space-y-5">
-        {applications.map((app) => (
-          <div
-            key={app.id}
-            className="border p-5 rounded-xl shadow hover:shadow-lg transition bg-white"
+  <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+    {tuition.map((app) => (
+      <div
+        key={app._id}
+        className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 p-6 border"
+      >
+        {/* SUBJECT & CLASS */}
+        <div className="flex justify-between items-start mb-3">
+          <h2 className="text-xl font-semibold text-indigo-600">
+            {app.studentSubjects}
+          </h2>
+          <span className="text-sm bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full">
+            Class {app.studentClass}
+          </span>
+        </div>
+
+        {/* STUDENT INFO */}
+        <p className="text-gray-700 mb-1">
+          <span className="font-medium">Student:</span>{" "}
+          {app.studentName}
+        </p>
+
+        <p className="text-gray-700 mb-1">
+          <span className="font-medium">Location:</span>{" "}
+          {app.studentLocation}
+        </p>
+
+        <p className="text-gray-700 mb-1">
+          <span className="font-medium">Mode:</span>{" "}
+          {app.studentMode}
+        </p>
+
+        <hr className="my-4" />
+
+        {/* TUTOR INFO */}
+        <p className="text-gray-700 mb-1">
+          <span className="font-medium">Your Qualification:</span>{" "}
+          {app.qualification}
+        </p>
+
+        <p className="text-gray-700 mb-1">
+          <span className="font-medium">Experience:</span>{" "}
+          {app.experience} year(s)
+        </p>
+
+        <p className="text-gray-700 mb-1">
+          <span className="font-medium">Expected Salary:</span>{" "}
+          {app.expectedSalary} Tk
+        </p>
+
+        {/* STATUS */}
+        <div className="mt-4">
+          <span className="font-medium text-gray-700">Status:</span>{" "}
+          <span
+            className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${
+              app.status === "ongoing"
+                ? "bg-green-100 text-green-700"
+                : app.status === "rejected"
+                ? "bg-red-100 text-red-700"
+                : "bg-yellow-100 text-yellow-700"
+            }`}
           >
-            <h2 className="text-xl font-semibold text-green-600">
-              {app.subject} (Class {app.class})
-            </h2>
+            {app.status}
+          </span>
+        </div>
 
-            <p className="mt-1">
-              <span className="font-semibold">Tutor:</span> {app.tutor}
-            </p>
-            <p>
-              <span className="font-semibold">Experience:</span>{" "}
-              {app.experience}
-            </p>
-            <p>
-              <span className="font-semibold">Salary:</span>{" "}
-              {app.expectedSalary} Tk
-            </p>
-
-            {/* STATUS */}
-            <p className="mt-3">
-              <span className="font-semibold">Status:</span>{" "}
-              <span
-                className={`font-bold ${
-                  app.status === "Confirmed"
-                    ? "text-green-600"
-                    : app.status === "Rejected"
-                    ? "text-red-600"
-                    : "text-yellow-600"
-                }`}
-              >
-                {app.status}
-              </span>
-            </p>
-
-            {/* Action Buttons */}
-            {app.status === "Pending" && (
-              <div className="flex gap-3 mt-4">
-                <button
-                  onClick={() => updateStatus(app.id, "Confirmed")}
-                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
-                >
-                  Confirm
-                </button>
-
-                <button
-                  onClick={() => updateStatus(app.id, "Rejected")}
-                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
-                >
-                  Reject
-                </button>
-              </div>
-            )}
-
-            {/* If already acted */}
-            {app.status !== "Pending" && (
-              <p className="mt-2 text-sm italic text-gray-500">
-                You have already {app.status.toLowerCase()} this application.
-              </p>
-            )}
-          </div>
-        ))}
+        {/* FOOTER */}
+        <p className="mt-4 text-xs text-gray-400">
+          Applied on{" "}
+          {new Date(app.createdAt).toLocaleDateString()}
+        </p>
       </div>
-    </div>
+    ))}
+  </div>
+</div>
+
   );
 };
 

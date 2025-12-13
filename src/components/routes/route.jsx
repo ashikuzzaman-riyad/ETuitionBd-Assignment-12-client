@@ -10,7 +10,7 @@ import ProfileSettings from "../dashboard/student/ProfileSettings";
 import MyTuitions from "../dashboard/student/MyTuitions";
 import Payments from "../dashboard/student/Payments";
 import AppliedTutors from "../dashboard/student/AppliedTutors";
-import MyApplications from "../dashboard/tutor/MyApplications";
+import MyApplications from "../dashboard/tutor/MYApplications";
 import UserManagement from "../dashboard/admin/UserManagement";
 import AllPaymentHistory from "../dashboard/admin/AllPaymentHistory";
 import RevenueHistory from "../dashboard/admin/RevenueHistory";
@@ -21,33 +21,37 @@ import About from "../pages/Home/About/About";
 import Contact from "../pages/Home/Contact/Contact";
 import ErrorPage from "../pages/Home/Error/ErrorPage";
 import VewUserProfile from "../dashboard/admin/VewUserProfile";
+import TutorCard from "../cards/TutorCard";
+import AdminRoute from "./AdminRoute";
+import TuitionManagement from "../dashboard/admin/TuitionManagement";
+import AppliedTuition from "../dashboard/tutor/AppliedTuition";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout></MainLayout>,
-    errorElement:<ErrorPage></ErrorPage>,
+    errorElement: <ErrorPage></ErrorPage>,
     children: [
       {
         index: true,
         element: <Home></Home>,
       },
       {
-        path:'/tuition-card',
-        element:<TuitionCard></TuitionCard>
+        path: "/tuition-card",
+        element: <TuitionCard></TuitionCard>,
       },
       {
-        path:'/tutors',
-        element: <TuitionCard></TuitionCard>
+        path: "/tutors",
+        element: <TutorCard></TutorCard>,
       },
       {
-        path:'/about',
-        element: <About></About>
+        path: "/about",
+        element: <About></About>,
       },
       {
-        path:'/contact',
-        element:<Contact></Contact>
-      }
+        path: "/contact",
+        element: <Contact></Contact>,
+      },
     ],
   },
 
@@ -61,70 +65,71 @@ const router = createBrowserRouter([
   },
   {
     path: "dashboard",
-    element: <PrivateRoute><DashboardLayout></DashboardLayout></PrivateRoute>,
+    element: (
+      <PrivateRoute>
+        <DashboardLayout></DashboardLayout>
+      </PrivateRoute>
+    ),
     children: [
       {
         path: "new-tuitions",
-        element: <PostTuition></PostTuition>
-
+        element: <PostTuition></PostTuition>,
       },
       {
         path: "my-tuitions",
-        element: <MyTuitions></MyTuitions>
-
+        element: <MyTuitions></MyTuitions>,
       },
       {
         path: "payment",
-        element: <Payments></Payments>
-
+        element: <Payments></Payments>,
       },
       {
         path: "applied-tutor",
-        element: <AppliedTutors></AppliedTutors>
-
+        element: <AppliedTutors></AppliedTutors>,
       },
       {
         path: "my-application",
-        element: <MyApplications></MyApplications>
-
+        element: <MyApplications></MyApplications>,
       },
       {
         path: "user-management",
-        element: <UserManagement></UserManagement>
-
+        element: (
+          <AdminRoute>
+            <UserManagement></UserManagement>
+          </AdminRoute>
+        ),
       },
       {
         path: "all-payment-history",
-        element: <AllPaymentHistory></AllPaymentHistory>
-
+        element: <AllPaymentHistory></AllPaymentHistory>,
       },
       {
         path: "revenue-history",
-        element: <RevenueHistory></RevenueHistory>
-
+        element: <RevenueHistory></RevenueHistory>,
       },
       {
         path: "upadet-tuitions/:id",
         element: <UpadetTuitions></UpadetTuitions>,
-        loader: ({ params }) => 
-  fetch(`http://localhost:5000/new-tuitions/${params.id}`)
-    
-
-
       },
       {
-        path:'vew-user/:id',
+        path: "vew-user/:id",
         element: <VewUserProfile></VewUserProfile>,
-         loader: ({params}) => fetch(`http://localhost:5000/users/${params.id}`)
+        loader: ({ params }) =>
+          fetch(`http://localhost:5000/users/${params.id}`),
       },
-     
+      {
+        path: "tuitions-management",
+        element: <TuitionManagement></TuitionManagement>,
+      },
+      {
+        path:'apply-tuitions',
+        element: <AppliedTuition></AppliedTuition>
+      },
+
       {
         path: "profile-setting",
         element: <ProfileSettings></ProfileSettings>,
-        
-
       },
-      
     ],
   },
 ]);

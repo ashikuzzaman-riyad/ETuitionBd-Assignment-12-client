@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { useLoaderData, useNavigate } from "react-router";
-import useAxiosSecure from "../../hooks/useAxiosSecure";
-import { useQuery } from "@tanstack/react-query";
+// import { useLoaderData, useNavigate } from "react-router";
+// import useAxiosSecure from "../../hooks/useAxiosSecure";
+// import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "../../hooks/useAuth";
 import Loading from "../../shared/Loading";
 
 const ProfileSettings = () => {
-   const data = useLoaderData()
+  //  const data = useLoaderData()
   const [openProfile, setOpenProfile] = useState(false);
   const [openPassword, setOpenPassword] = useState(false);
   const {user, loading} = useAuth()

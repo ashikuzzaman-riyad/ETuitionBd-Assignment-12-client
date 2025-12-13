@@ -25,40 +25,12 @@ const UpdateTuitions = () => {
   ];
   const classOptions = Array.from({ length: 10 }, (_, i) => i + 1);
   // load default values in form
-  const { register, handleSubmit, reset } = useForm({
-    defaultValues: {
-      studentSubjects: data.studentSubjects,
-      studentClass: data.studentClass,
-      studentBudget: data.studentBudget,
-      studentLocation: data.studentLocation,
-      status: data.status,
-    },
-  });
+  const { register, handleSubmit, reset } = useForm();
 
   // PATCH Function
   const onSubmit = async (formData) => {
     console.log(formData);
-    try {
-      const res = await axiosSecure.patch(
-        `/new-tuitions/${data._id}`, 
-        formData
-      );
-
-      if (res.data.modifiedCount) {
-        Swal.fire({
-          icon: "success",
-          title: "Updated Successfully",
-          timer: 1500,
-          showConfirmButton: false,
-        });
-        navigate(-1);
-      }
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Update Failed",
-      });
-    }
+   
   };
 
   return (

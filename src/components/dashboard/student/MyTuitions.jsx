@@ -161,7 +161,7 @@ const MyTuitions = () => {
                   {/* Edit Button */}
                   <Link to={`/dashboard/upadet-tuitions/${student._id}`}>
                   <button
-                    // onClick={() => handleEdit(student)}
+                    
                     className="text-indigo-600 flex  justify-center items-center gap-1 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-4 transition duration-150"
                     title="Edit Record"
                   >
