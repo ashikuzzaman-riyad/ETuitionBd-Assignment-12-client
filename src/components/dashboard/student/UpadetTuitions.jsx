@@ -30,7 +30,6 @@ const UpdateTuitions = () => {
   // PATCH Function
   const onSubmit = async (formData) => {
     console.log(formData);
-   
   };
 
   return (
@@ -38,7 +37,7 @@ const UpdateTuitions = () => {
       <h2 className="text-2xl font-bold mb-5">Update Tuition</h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div >
+        <div>
           {/* Class (Required) */}
           <div>
             <label className="block text-sm font-medium mb-1">
@@ -60,12 +59,10 @@ const UpdateTuitions = () => {
         </div>
         {/* class */}
         <div>
-          <label className="block text-sm font-medium mb-1">
-            Class
-          </label>
+          <label className="block text-sm font-medium mb-1">Class</label>
           <select
             // Validation remains active here
-            {...register("studentClass", )}
+            {...register("studentClass")}
             className="w-full border rounded p-2"
           >
             <option value="">Select class (1-10)</option>

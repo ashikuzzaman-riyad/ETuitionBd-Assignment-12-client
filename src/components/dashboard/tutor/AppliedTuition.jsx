@@ -31,7 +31,7 @@ const AppliedTuition = () => {
   };
  
   const onSubmit =async (data) => {
-    console.log(data, tuition._id)
+    
     
      try {
       const application = {

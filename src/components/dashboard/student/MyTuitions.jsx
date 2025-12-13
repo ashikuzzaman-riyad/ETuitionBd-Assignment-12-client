@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
@@ -6,10 +6,29 @@ import { FaEdit } from "react-icons/fa";
 import { MdDeleteOutline } from "react-icons/md";
 import Swal from "sweetalert2";
 import { Link } from "react-router";
+import { useForm } from "react-hook-form";
 
 const MyTuitions = () => {
+   const { register, handleSubmit, reset } = useForm();
+  const [studentUpdate, setStudentUpdate] = useState(null)
+  const tuitionRef = useRef();
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
+
+  const subjects = [
+    "Bangla",
+    "English",
+    "Math",
+    "Physics",
+    "Chemistry",
+    "Biology",
+    "Higher Math",
+    "ICT",
+    "Bangladesh Studies",
+    "Accounting",
+    "Economics",
+  ];
+  const classOptions = Array.from({ length: 10 }, (_, i) => i + 1);
   const { data: tuition = [], refetch } = useQuery({
     queryKey: ["myTuitions", user?.email],
     queryFn: async () => {
@@ -47,6 +66,62 @@ const MyTuitions = () => {
         });
       }
     });
+  };
+
+  const openModal = (student) => {
+  setStudentUpdate(student);
+  tuitionRef.current.showModal();
+  reset({
+    studentBudget: student.studentBudget,
+    studentLocation: student.studentLocation,
+    studentClass: student.studentClass,
+    studentSubjects: student.studentSubjects
+  });
+};
+
+   console.log(studentUpdate)
+    // UPDATE Tuition
+  const onSubmit = async (data) => {
+    if (!studentUpdate?._id)
+      return Swal.fire({ icon: "error", title: "No student selected" });
+
+    try {
+      const Updates = {
+        studentBudget: Number(data.studentBudget),
+        studentLocation: data.studentLocation,
+        studentClass: Number(data.studentClass),
+        studentSubjects: data.studentSubjects,
+      };
+
+      const res = await axiosSecure.patch(
+        `/new-tuitions/${studentUpdate._id}`,
+        Updates
+      );
+
+      if (res.data.modifiedCount > 0) {
+        tuitionRef.current?.close();
+        Swal.fire({
+          icon: "success",
+          title: "Updated Successfully!",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+        refetch();
+      } else {
+        Swal.fire({
+          icon: "info",
+          title: "No changes detected",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      Swal.fire({
+        icon: "error",
+        title: "Update Failed",
+      });
+    }
   };
 
   return (
@@ -152,24 +227,24 @@ const MyTuitions = () => {
       }
     `}
                   >
-                    {student.status.toUpperCase()}
+                    {student.status}
                   </span>
                 </td>
 
                 {/* Actions (Edit and Delete) */}
                 <td className="px-6 py-4 whitespace-nowrap flex text-center text-sm font-medium">
                   {/* Edit Button */}
-                  <Link to={`/dashboard/upadet-tuitions/${student._id}`}>
-                  <button
-                    
-                    className="text-indigo-600 flex  justify-center items-center gap-1 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-4 transition duration-150"
-                    title="Edit Record"
-                  >
-                    <span>
-                      <FaEdit size={25} />
-                    </span>
-                    <span className="sr-only sm:not-sr-only"> Edit</span>
-                  </button>
+                  <Link>
+                    <button
+                      onClick={() => openModal(student)}
+                      className="text-indigo-600 flex  justify-center items-center gap-1 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-4 transition duration-150"
+                      title="Edit Record"
+                    >
+                      <span>
+                        <FaEdit size={25} />
+                      </span>
+                      <span className="sr-only sm:not-sr-only"> Edit</span>
+                    </button>
                   </Link>
 
                   {/* Delete Button */}
@@ -189,6 +264,83 @@ const MyTuitions = () => {
           </tbody>
         </table>
       </div>
+      {/* You can open the modal using document.getElementById('ID').showModal() method */}
+
+      <dialog ref={tuitionRef} className="modal">
+        <div className="modal-box">
+          <form method="dialog">
+            {/* if there is a button in form, it will close the modal */}
+            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+              ✕
+            </button>
+          </form>
+           <div className="max-w-xl mx-auto p-6 bg-white shadow-lg rounded-xl">
+      <h2 className="text-2xl font-bold mb-5">Update Tuition</h2>
+
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <div>
+          {/* Class (Required) */}
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Subjects (Choose one)
+            </label>
+            <select
+              // Validation remains active here
+              {...register("studentSubjects")}
+              className="w-full border rounded p-2"
+              
+            >
+              <option value="">Select one subject</option>
+              {subjects.map((sub) => (
+                <option key={sub} value={sub}>
+                  {sub}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+        {/* class */}
+        <div>
+          <label className="block text-sm font-medium mb-1">Class</label>
+          <select
+            // Validation remains active here
+            {...register("studentClass")}
+            className="w-full border rounded p-2"
+          >
+            <option value="">Select class (1-10)</option>
+            {classOptions.map((c) => (
+              <option key={c} value={c}>{`Class ${c}`}</option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="block font-semibold">Budget</label>
+          <input
+            type="number"
+            {...register("studentBudget")}
+            className="w-full border px-3 py-2 rounded"
+          />
+        </div>
+
+        <div>
+          <label className="block font-semibold">Location</label>
+          <input
+            {...register("studentLocation")}
+            className="w-full border px-3 py-2 rounded"
+          />
+        </div>
+
+        <button
+          type="submit"
+          className="bg-indigo-600 text-white px-4 py-2 rounded w-full mt-4"
+        >
+          Update Tuition
+        </button>
+      </form>
+    </div>
+        </div>
+      </dialog>
     </div>
   );
 };
