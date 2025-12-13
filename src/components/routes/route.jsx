@@ -25,6 +25,7 @@ import TutorCard from "../cards/TutorCard";
 import AdminRoute from "./AdminRoute";
 import TuitionManagement from "../dashboard/admin/TuitionManagement";
 import AppliedTuition from "../dashboard/tutor/AppliedTuition";
+import OngoingTuitions from "../dashboard/tutor/OngoingTuitions";
 
 const router = createBrowserRouter([
   {
@@ -124,6 +125,10 @@ const router = createBrowserRouter([
       {
         path:'apply-tuitions',
         element: <AppliedTuition></AppliedTuition>
+      },
+      {
+        path: 'ongoing',
+        element: <OngoingTuitions></OngoingTuitions>
       },
 
       {

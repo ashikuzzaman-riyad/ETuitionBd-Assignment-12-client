@@ -12,7 +12,7 @@ const MyApplications = () => {
     queryKey: ["myApplication", user?.email],
     queryFn: async () => {
       const res = await axiosSecure.get(
-        `/new-tuitions/status?tutorEmail=${user.email}&status=ongoing`
+        `/new-tuitions/status?tutorEmail=${user.email}`
       );
       return res.data;
     },
