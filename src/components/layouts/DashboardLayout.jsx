@@ -290,7 +290,7 @@ const DashboardLayout = () => {
                   >
                     <NavLink
                       className="hover:text-green-600"
-                      to="/dashboard/vew-total-earning "
+                      to="/dashboard/vew-total-earning"
                     >
                       <SiScikitlearn className="my-1.5 inline-block size-4" />
                       <span className="is-drawer-close:hidden">

@@ -1,9 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { CheckCircle } from "lucide-react";
-import { Link } from "react-router";
+import { Link, useSearchParams } from "react-router";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 const PaymentSuccess = () => {
+     const [searchParams] = useSearchParams();
+    const [paymentInfo, setPaymentInfo] = useState({});
+    const sessionId = searchParams.get('session_id');
+    const axiosSecure = useAxiosSecure();
+
+    console.log(sessionId);
+
+    useEffect(() => {
+        if (sessionId) {
+            axiosSecure.patch(`/payment-success?session_id=${sessionId}`)
+                .then(res => {
+                    console.log(res.data)
+                    setPaymentInfo({
+                        transactionId: res.data.transactionId,
+                        trackingId : res.data.trackingId
+                    })
+                })
+        }
+
+    }, [sessionId, axiosSecure])
     return (
         <div className="min-h-screen flex items-center justify-center   p-4">
       <motion.div
@@ -27,7 +48,7 @@ const PaymentSuccess = () => {
           transition={{ delay: 1, duration: 0.5 }}
           className="text-2xl font-bold text-gray-800 mb-2"
         >
-          Payment Successful!
+          Payment Successful! for 
         </motion.h1>
 
         <motion.p

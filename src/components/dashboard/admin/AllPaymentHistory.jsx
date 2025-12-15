@@ -1,7 +1,9 @@
-import React from 'react';
+import { useQuery } from "@tanstack/react-query";
+import React from "react";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 const AllPaymentHistory = () => {
-     const payments = [
+  const paymentsss = [
     {
       id: 1,
       studentName: "Riyad Hossen",
@@ -30,52 +32,84 @@ const AllPaymentHistory = () => {
       date: "2025-01-10",
     },
   ];
+  const axiosSecure = useAxiosSecure();
+  
+  const { data: payments = [] } = useQuery({
+    queryKey: ["payment", ],
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/payments`);
+      return res.data;
+    },
+  });
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-semibold mb-4">Student Payment Table</h2>
+  <h2 className="text-2xl font-bold text-gray-800 mb-6">
+    Student Payments
+  </h2>
 
-      <div className="overflow-x-auto shadow rounded-lg">
-        <table className="table-auto w-full border-collapse text-left">
-          <thead className="bg-green-600 text-white">
-            <tr>
-              <th className="py-3 px-4">ID</th>
-              <th className="py-3 px-4">Student Name</th>
-              <th className="py-3 px-4">Class</th>
-              <th className="py-3 px-4">Subject</th>
-              <th className="py-3 px-4">Amount (৳)</th>
-              <th className="py-3 px-4">Status</th>
-              <th className="py-3 px-4">Date</th>
-            </tr>
-          </thead>
+  <div className="overflow-x-auto bg-white shadow-lg rounded-xl">
+    <table className="min-w-full text-sm text-gray-700">
+      <thead className="bg-gradient-to-r from-green-600 to-emerald-500 text-white">
+        <tr>
+          <th className="px-5 py-4 text-left">#</th>
+          <th className="px-5 py-4 text-left">Student</th>
+          <th className="px-5 py-4 text-left">Email</th>
+          <th className="px-5 py-4 text-left">Subject</th>
+          <th className="px-5 py-4 text-left">Amount</th>
+          <th className="px-5 py-4 text-left">Status</th>
+          <th className="px-5 py-4 text-left">Paid At</th>
+        </tr>
+      </thead>
 
-          <tbody>
-            {payments.map((payment) => (
-              <tr
-                key={payment.id}
-                className="border-b hover:bg-gray-50 transition"
+      <tbody>
+        {payments.map((payment, index) => (
+          <tr
+            key={payment._id}
+            className="border-b last:border-none hover:bg-gray-50 transition"
+          >
+            <td className="px-5 py-4 font-medium">
+              {index + 1}
+            </td>
+
+            <td className="px-5 py-4">
+              {payment.studentName || "N/A"}
+            </td>
+
+            <td className="px-5 py-4 text-gray-500">
+              {payment.studentEmail}
+            </td>
+
+            <td className="px-5 py-4">
+              {payment.studentSubjects}
+            </td>
+
+            <td className="px-5 py-4 font-semibold">
+              ${payment.amount}
+            </td>
+
+            <td className="px-5 py-4">
+              <span
+                className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                  payment.paymentStatus === "paid"
+                    ? "bg-green-100 text-green-700"
+                    : "bg-red-100 text-red-600"
+                }`}
               >
-                <td className="py-3 px-4">{payment.id}</td>
-                <td className="py-3 px-4">{payment.studentName}</td>
-                <td className="py-3 px-4">{payment.class}</td>
-                <td className="py-3 px-4">{payment.subject}</td>
-                <td className="py-3 px-4">{payment.amount}</td>
+                {payment.paymentStatus}
+              </span>
+            </td>
 
-                <td
-                  className={`py-3 px-4 font-semibold ${
-                    payment.status === "Paid" ? "text-green-600" : "text-red-500"
-                  }`}
-                >
-                  {payment.status}
-                </td>
+            <td className="px-5 py-4 text-gray-500">
+              {new Date(payment.paidAt).toLocaleDateString()}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</div>
 
-                <td className="py-3 px-4">{payment.date}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
   );
 };
 

@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { FiShield, FiShieldOff, FiUserPlus, FiUserX } from "react-icons/fi";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
-import { data, Link } from "react-router";
+import {  Link } from "react-router";
 
 const UsersManagement = () => {
   const [textSearch, setTextSearch] = useState();
@@ -12,7 +12,7 @@ const UsersManagement = () => {
   const { data: user = [], refetch } = useQuery({
     queryKey: ["users", textSearch],
     queryFn: async () => {
-      const res = await axiosSecure.get(`/users?textSearch=${textSearch}`);
+      const res = await axiosSecure.get(`/users?searchText=${textSearch}`);
       return res.data;
     },
   });

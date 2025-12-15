@@ -13,7 +13,7 @@ import AppliedTutors from "../dashboard/student/AppliedTutors";
 import MyApplications from "../dashboard/tutor/MYApplications";
 import UserManagement from "../dashboard/admin/UserManagement";
 import AllPaymentHistory from "../dashboard/admin/AllPaymentHistory";
-import RevenueHistory from "../dashboard/admin/RevenueHistory";
+
 import PrivateRoute from "./PrivateRoute";
 import UpadetTuitions from "../dashboard/student/UpadetTuitions";
 import TuitionCard from "../cards/TuitionCard";
@@ -29,6 +29,9 @@ import OngoingTuitions from "../dashboard/tutor/OngoingTuitions";
 import Payment from "../dashboard/Payment/Payment";
 import PaymentSuccess from "../dashboard/Payment/PaymentSuccess";
 import PaymentCancel from "../dashboard/Payment/PaymentCancel";
+
+import AdminTotalEarnings from "../dashboard/admin/AdminTotalEarnings";
+import RevenueHistory from "../dashboard/tutor/RevenueHistory";
 
 const router = createBrowserRouter([
   {
@@ -144,6 +147,14 @@ const router = createBrowserRouter([
       {
         path: "payment-cancelled",
         element: <PaymentCancel />,
+      },
+      {
+        path: 'revenue-history',
+        element:<RevenueHistory></RevenueHistory>
+      },
+      {
+        path: 'vew-total-earning',
+        element: <AdminTotalEarnings></AdminTotalEarnings>
       },
 
       {

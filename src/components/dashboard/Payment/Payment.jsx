@@ -16,17 +16,7 @@ const Payment = () => {
     },
   });
   if (isLoading) return <Loading></Loading>;
-  const handlePayment = async () => {
-    const paymentInfo = {
-      cost: tuition.expectedSalary,
-      studentEmail: tuition.studentEmail,
-      tuitionId: tuition._id,
-      studentSubjects: tuition.studentSubjects,
-    };
-    const res = await axiosSecure.post('/payment-checkout-session', paymentInfo)
-    console.log(res.data)
-    window.location.href = res.data.url
-  };
+ 
   return (
     <div>
       pay for {tuition.studentSubjects}

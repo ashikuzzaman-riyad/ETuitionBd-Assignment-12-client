@@ -1,35 +1,19 @@
-import React from 'react';
+import { useQuery } from "@tanstack/react-query";
+import React from "react";
+import { useAuth } from "../../hooks/useAuth";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 const Payments = () => {
-    const payments = [
-    {
-      id: 1,
-      studentName: "Riyad Hossen",
-      class: "8",
-      subject: "Math",
-      amount: 3000,
-      status: "Paid",
-      date: "2025-01-02",
+  
+  const axiosSecure = useAxiosSecure();
+  const { user } = useAuth();
+  const { data: payment = [] } = useQuery({
+    queryKey: ["payment", user?.email],
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/payments?studentEmail=${user.email}`);
+      return res.data;
     },
-    {
-      id: 2,
-      studentName: "Samiul Islam",
-      class: "6",
-      subject: "English",
-      amount: 3500,
-      status: "Pending",
-      date: "2025-01-05",
-    },
-    {
-      id: 3,
-      studentName: "Nusrat Jahan",
-      class: "10",
-      subject: "Physics",
-      amount: 4500,
-      status: "Paid",
-      date: "2025-01-10",
-    },
-  ];
+  });
 
   return (
     <div className="p-6">
@@ -41,29 +25,32 @@ const Payments = () => {
             <tr>
               <th className="py-3 px-4">ID</th>
               <th className="py-3 px-4">Student Name</th>
-              <th className="py-3 px-4">Class</th>
+              <th className="py-3 px-4">Student Email</th>
+              <th className="py-3 px-4">payment status</th>
               <th className="py-3 px-4">Subject</th>
-              <th className="py-3 px-4">Amount (৳)</th>
-              <th className="py-3 px-4">Status</th>
+
               <th className="py-3 px-4">Date</th>
             </tr>
           </thead>
 
           <tbody>
-            {payments.map((payment) => (
+            {payment.map((payment) => (
               <tr
                 key={payment.id}
                 className="border-b hover:bg-gray-50 transition"
               >
                 <td className="py-3 px-4">{payment.id}</td>
                 <td className="py-3 px-4">{payment.studentName}</td>
-                <td className="py-3 px-4">{payment.class}</td>
-                <td className="py-3 px-4">{payment.subject}</td>
-                <td className="py-3 px-4">{payment.amount}</td>
+                <td className="py-3 px-4">{payment.studentEmail}</td>
+                <td className="py-3 px-4">{payment.paymentStatus}</td>
+                <td className="py-3 px-4">{payment.studentSubject}</td>
+                <td className="py-3 px-4">{payment.paidAt}</td>
 
                 <td
                   className={`py-3 px-4 font-semibold ${
-                    payment.status === "Paid" ? "text-green-600" : "text-red-500"
+                    payment.status === "Paid"
+                      ? "text-green-600"
+                      : "text-red-500"
                   }`}
                 >
                   {payment.status}
