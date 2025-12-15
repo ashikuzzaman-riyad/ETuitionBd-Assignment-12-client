@@ -317,7 +317,10 @@ const DashboardLayout = () => {
                   </button>
                 </li>
                 {/* List item */}
-                <li>
+               
+              </>
+            )}
+             <li>
                   <button
                     className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
                     data-tip="Profile Settings"
@@ -334,8 +337,6 @@ const DashboardLayout = () => {
                     </NavLink>
                   </button>
                 </li>
-              </>
-            )}
           </ul>
         </div>
       </div>

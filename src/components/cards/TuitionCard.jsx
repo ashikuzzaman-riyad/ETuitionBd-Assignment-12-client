@@ -62,7 +62,7 @@ const axiosSecure = useAxiosSecure();
     queryKey: ["myTuitions", ],
     queryFn: async () => {
       const res = await axiosSecure.get(`/new-tuitions`);
-      return res.data;
+      return res.data.slice(0, 8);
     },
   });
 

@@ -41,7 +41,7 @@ const TutorCard = () => {
 
 const [tutors, setTutors] = useState([]);
 const axiosSecure = useAxiosSecure()
-
+ const tutor = tutors.slice(0, 8)
   useEffect(() => {
    axiosSecure.get("/users/tutors")
       .then(res => setTutors(res.data));
@@ -50,7 +50,7 @@ const axiosSecure = useAxiosSecure()
 
     return (
          <div className="grid grid-cols-1 container mx-auto sm:grid-cols-2 lg:grid-cols-4 gap-6 p-6">
-      {tutors.map((tutor, index) => (
+      {tutor.map((tutor, index) => (
         <div
           key={index}
           className="bg-white border shadow-md rounded-xl p-5 flex flex-col items-center text-center hover:shadow-xl transition-all duration-300"
