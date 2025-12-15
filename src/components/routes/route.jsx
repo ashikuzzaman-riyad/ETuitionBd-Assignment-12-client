@@ -26,6 +26,9 @@ import AdminRoute from "./AdminRoute";
 import TuitionManagement from "../dashboard/admin/TuitionManagement";
 import AppliedTuition from "../dashboard/tutor/AppliedTuition";
 import OngoingTuitions from "../dashboard/tutor/OngoingTuitions";
+import Payment from "../dashboard/Payment/Payment";
+import PaymentSuccess from "../dashboard/Payment/PaymentSuccess";
+import PaymentCancel from "../dashboard/Payment/PaymentCancel";
 
 const router = createBrowserRouter([
   {
@@ -101,6 +104,10 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: "payment/:tuitionId",
+        element: <Payment></Payment>,
+      },
+      {
         path: "all-payment-history",
         element: <AllPaymentHistory></AllPaymentHistory>,
       },
@@ -123,15 +130,20 @@ const router = createBrowserRouter([
         element: <TuitionManagement></TuitionManagement>,
       },
       {
-        path:'apply-tuitions',
-        element: <AppliedTuition></AppliedTuition>
+        path: "apply-tuitions",
+        element: <AppliedTuition></AppliedTuition>,
       },
       {
-        path: 'ongoing',
-        element: <OngoingTuitions></OngoingTuitions>
+        path: "ongoing",
+        element: <OngoingTuitions></OngoingTuitions>,
       },
       {
-       
+        path: "payment-success",
+        element: <PaymentSuccess />,
+      },
+      {
+        path: "payment-cancelled",
+        element: <PaymentCancel />,
       },
 
       {

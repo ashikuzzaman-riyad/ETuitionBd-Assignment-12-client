@@ -1,20 +1,85 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
+import Swal from "sweetalert2";
 
 const OngoingTuitions = () => {
+  const [selectedApp, setSelectedApp] = useState(null);
+  const modalRef = useRef();
+
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
   const { data: tuition = [], refetch } = useQuery({
     queryKey: ["myApplication", user?.email],
     queryFn: async () => {
       const res = await axiosSecure.get(
-        `/new-tuitions/status?tutorEmail=${user.email}&status=ongoing`
+        `/tutor-apply/email?tutorEmail=${user.email}&status=pending`
       );
       return res.data;
     },
   });
+
+  const openModal = (app) => {
+    setSelectedApp(app);
+    modalRef.current.showModal(); // HTML <dialog> or your modal library
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const form = e.target;
+    const updatedData = {
+      qualification: form.qualification.value,
+      experience: form.experience.value,
+      expectedSalary: form.expectedSalary.value,
+    };
+
+    await axiosSecure.patch(`/tutor-apply/${selectedApp._id}`, updatedData);
+
+    modalRef.current.close();
+    refetch();
+     Swal.fire({
+      icon: "success",
+      title: "Application Updated!",
+      text: "Your tutor application has been successfully updated.",
+      timer: 2000,
+      showConfirmButton: false,
+    });
+  };
+
+
+   const handleDelete = (id) => {
+      console.log(id);
+  
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          axiosSecure.delete(`/tutor-apply/${id}`).then((res) => {
+            console.log(res.data);
+  
+            if (res.data.deletedCount) {
+              // refresh the data in the ui
+              refetch();
+  
+              Swal.fire({
+                title: "Deleted!",
+                text: "Your Tuitions post  request has been deleted.",
+                icon: "success",
+              });
+            }
+          });
+        }
+      });
+    };
+
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-3xl font-extrabold mb-10 text-gray-900">
@@ -93,17 +158,64 @@ const OngoingTuitions = () => {
             {/* Optional Action Buttons (if Pending) */}
             {app.status.toLowerCase() === "pending" && (
               <div className="mt-4 flex gap-3">
-                <button className="flex-1 px-4 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700 transition">
-                  Confirm
+                <button
+                  onClick={() => {
+                    openModal(app)
+                  }}
+                  className="flex-1 px-4 py-2 bg-green-600 text-white rounded-xl"
+                >
+                  Edit
                 </button>
-                <button className="flex-1 px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition">
-                  Reject
+
+                <button
+                onClick={() => handleDelete (app._id)}
+                 className="flex-1 px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition">
+                  Delete
                 </button>
               </div>
             )}
           </div>
         ))}
       </div>
+      <dialog ref={modalRef} className="modal">
+        <form onSubmit={handleSubmit} method="dialog" className="modal-box">
+          <h3 className="font-bold text-lg mb-4">Edit Application</h3>
+            <label htmlFor="">Qualification</label>
+          <input
+            name="qualification"
+            defaultValue={selectedApp?.qualification}
+            className="input input-bordered w-full mb-3"
+            placeholder="Qualification"
+          />
+       <label htmlFor="">Experience</label>
+          <input
+            name="experience"
+            defaultValue={selectedApp?.experience}
+            className="input input-bordered w-full mb-3"
+            placeholder="Experience (years)"
+            type="number"
+          />
+        <label htmlFor="">ExpectedSalary</label>
+          <input
+            name="expectedSalary"
+            defaultValue={selectedApp?.expectedSalary}
+            className="input input-bordered w-full mb-3"
+            placeholder="Expected Salary"
+            type="number"
+          />
+
+          <div className="modal-action">
+            <button className="btn btn-primary">Update</button>
+            <button
+              type="button"
+              onClick={() => modalRef.current.close()}
+              className="btn"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </dialog>
     </div>
   );
 };

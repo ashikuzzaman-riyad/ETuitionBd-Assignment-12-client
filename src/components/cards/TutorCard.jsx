@@ -43,7 +43,7 @@ const [tutors, setTutors] = useState([]);
 const axiosSecure = useAxiosSecure()
 
   useEffect(() => {
-   axiosSecure.get("http://localhost:5000/users/tutors")
+   axiosSecure.get("/users/tutors")
       .then(res => setTutors(res.data));
   }, [axiosSecure]);
   console.log(tutors)

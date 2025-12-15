@@ -12,7 +12,7 @@ const MyApplications = () => {
     queryKey: ["myApplication", user?.email],
     queryFn: async () => {
       const res = await axiosSecure.get(
-        `/new-tuitions/status?tutorEmail=${user.email}`
+        `/tutor-apply/email?tutorEmail=${user.email}&status=pending`
       );
       return res.data;
     },
@@ -21,7 +21,7 @@ const MyApplications = () => {
   return (
    <div className="container mx-auto p-6">
   <h1 className="text-3xl font-bold mb-8 text-gray-800">
-    My Tuition Applications
+    My Tuition Applications {tuition.length}
   </h1>
 
   <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

@@ -35,17 +35,22 @@ const AppliedTuition = () => {
     
      try {
       const application = {
+        tuitionId: tuition._id,
+        studentName: tuition.studentName,
+        studentBudget: tuition.studentBudget,
+        studentEmail: tuition.studentEmail,
+        studentSubjects: tuition.studentSubjects,
         tutorEmail: user.email,
         tutorName: user.displayName ,
-        status: "ongoing",
+        status: "pending",
         qualification:data.qualification ,
         experience: data.experience,
         expectedSalary: data.expectedSalary
       };
 
-      const res = await axiosSecure.patch(`/new-tuitions/status/${tuition._id}`, application);
+      const res = await axiosSecure.post(`/tutor-apply`, application);
 
-      if (res.data.modifiedCount) {
+      if (res.data.insertedId) {
         tutorModalRef.current.close()
         Swal.fire({
           icon: "success",

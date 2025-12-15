@@ -61,7 +61,7 @@ const axiosSecure = useAxiosSecure();
   const { data: tuition = [], } = useQuery({
     queryKey: ["myTuitions", ],
     queryFn: async () => {
-      const res = await axiosSecure.get(`/new-tuition`);
+      const res = await axiosSecure.get(`/new-tuitions`);
       return res.data;
     },
   });
