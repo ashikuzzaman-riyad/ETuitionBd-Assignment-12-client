@@ -2,6 +2,7 @@ import React from 'react';
 import HeroSection from './HeroSection/HeroSection';
 import Provide from './HeroSection/Provide';
 import TuitionPost from './HeroSection/TuitiionPost';
+import LatestTutor from './HeroSection/LatestTutor';
 
 const Home = () => {
     return (
@@ -14,6 +15,9 @@ const Home = () => {
            </section>
            <section>
             <TuitionPost></TuitionPost>
+           </section>
+           <section>
+            <LatestTutor></LatestTutor>
            </section>
         </div>
     );
