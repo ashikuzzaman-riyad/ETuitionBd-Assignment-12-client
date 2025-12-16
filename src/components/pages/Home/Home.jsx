@@ -4,6 +4,7 @@ import Provide from './HeroSection/Provide';
 import TuitionPost from './HeroSection/TuitiionPost';
 import LatestTutor from './HeroSection/LatestTutor';
 import HowItWorks from './HeroSection/HowItWorks';
+import WhyChooseUs from './HeroSection/WhyChooseUs';
 
 const Home = () => {
     return (
@@ -22,6 +23,9 @@ const Home = () => {
            </section>
            <section>
             <HowItWorks></HowItWorks>
+           </section>
+           <section>
+            <WhyChooseUs></WhyChooseUs>
            </section>
         </div>
     );
