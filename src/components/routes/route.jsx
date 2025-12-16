@@ -6,7 +6,7 @@ import Login from "../pages/Home/Auth/Login";
 import Home from "../pages/Home/Home";
 import DashboardLayout from "../layouts/DashboardLayout";
 import PostTuition from "../dashboard/student/PostTuition";
-import ProfileSettings from "../dashboard/student/ProfileSettings";
+
 import MyTuitions from "../dashboard/student/MyTuitions";
 import Payments from "../dashboard/student/Payments";
 import AppliedTutors from "../dashboard/student/AppliedTutors";
@@ -32,6 +32,7 @@ import PaymentCancel from "../dashboard/Payment/PaymentCancel";
 
 import AdminTotalEarnings from "../dashboard/admin/AdminTotalEarnings";
 import RevenueHistory from "../dashboard/tutor/RevenueHistory";
+import ProfileSetting from "../dashboard/ProfileSetting";
 
 const router = createBrowserRouter([
   {
@@ -159,7 +160,7 @@ const router = createBrowserRouter([
 
       {
         path: "profile-setting",
-        element: <ProfileSettings></ProfileSettings>,
+        element: <ProfileSetting></ProfileSetting>,
       },
     ],
   },

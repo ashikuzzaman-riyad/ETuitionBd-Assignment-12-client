@@ -1,11 +1,8 @@
-import React, { useState } from "react";
-// import { useLoaderData, useNavigate } from "react-router";
-// import useAxiosSecure from "../../hooks/useAxiosSecure";
-// import { useQuery } from "@tanstack/react-query";
-import { useAuth } from "../../hooks/useAuth";
-import Loading from "../../shared/Loading";
+import { useState } from "react";
+import { useAuth } from "../hooks/useAuth";
+import Loading from "../shared/Loading";
 
-const ProfileSettings = () => {
+const ProfileSetting = () => {
   //  const data = useLoaderData()
   const [openProfile, setOpenProfile] = useState(false);
   const [openPassword, setOpenPassword] = useState(false);
@@ -72,15 +69,7 @@ const ProfileSettings = () => {
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-1 text-green-800">
-                  {user?.phone}
-                </label>
-                <input
-                  className="w-full border border-green-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-green-400"
-                  placeholder="01XXXXXXXXX"
-                />
-              </div>
+              
 
               <div className="modal-action flex justify-end gap-2">
                 <button
@@ -152,4 +141,4 @@ const ProfileSettings = () => {
   );
 };
 
-export default ProfileSettings;
+export default ProfileSetting;
