@@ -60,10 +60,10 @@ const ProfileSetting = () => {
 
               <div>
                 <label className="block text-sm font-medium mb-1 text-green-800">
-                  {user?.email}
+                  {user?.photoURL}
                 </label>
                 <input
-                  type="email"
+                  type="text"
                   className="w-full border border-green-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-green-400"
                   placeholder="you@example.com"
                 />

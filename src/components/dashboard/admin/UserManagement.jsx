@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { FiShield, FiShieldOff, FiUserPlus, FiUserX } from "react-icons/fi";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
-import {  Link } from "react-router";
+import { Link } from "react-router";
 
 const UsersManagement = () => {
   const [textSearch, setTextSearch] = useState();
@@ -264,7 +264,9 @@ const UsersManagement = () => {
                 </td>
 
                 <td className="px-4 py-3">
-                  <Link to={`/dashboard/vew-user/${data._id}`}>View Profile</Link>
+                  <Link to={`/dashboard/vew-user/${data._id}`}>
+                    View Profile
+                  </Link>
                 </td>
               </tr>
             ))}

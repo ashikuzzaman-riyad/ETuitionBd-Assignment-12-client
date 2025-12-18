@@ -1,38 +1,35 @@
 import React from "react";
 import { createBrowserRouter } from "react-router";
 import MainLayout from "../layouts/MainLayout";
+import ErrorPage from "../pages/Home/Error/ErrorPage";
+
+import TuitionCard from "../cards/TuitionCard";
+import TutorCard from "../cards/TutorCard";
+import About from "../pages/Home/About/About";
 import Register from "../pages/Home/Auth/Register";
 import Login from "../pages/Home/Auth/Login";
-import Home from "../pages/Home/Home";
+import PrivateRoute from "./PrivateRoute";
 import DashboardLayout from "../layouts/DashboardLayout";
 import PostTuition from "../dashboard/student/PostTuition";
-
 import MyTuitions from "../dashboard/student/MyTuitions";
 import Payments from "../dashboard/student/Payments";
 import AppliedTutors from "../dashboard/student/AppliedTutors";
-import MyApplications from "../dashboard/tutor/MYApplications";
-import UserManagement from "../dashboard/admin/UserManagement";
-import AllPaymentHistory from "../dashboard/admin/AllPaymentHistory";
-
-import PrivateRoute from "./PrivateRoute";
-import UpadetTuitions from "../dashboard/student/UpadetTuitions";
-import TuitionCard from "../cards/TuitionCard";
-import About from "../pages/Home/About/About";
-import Contact from "../pages/Home/Contact/Contact";
-import ErrorPage from "../pages/Home/Error/ErrorPage";
-import VewUserProfile from "../dashboard/admin/VewUserProfile";
-import TutorCard from "../cards/TutorCard";
+import MyApplications from "../dashboard/tutor/MyApplications";
+import UsersManagement from "../dashboard/admin/UserManagement";
 import AdminRoute from "./AdminRoute";
+import AllPaymentHistory from "../dashboard/admin/AllPaymentHistory";
+import RevenueHistory from "../dashboard/tutor/RevenueHistory";
+
+import VewUserProfile from "../dashboard/admin/VewUserProfile";
 import TuitionManagement from "../dashboard/admin/TuitionManagement";
 import AppliedTuition from "../dashboard/tutor/AppliedTuition";
 import OngoingTuitions from "../dashboard/tutor/OngoingTuitions";
-import Payment from "../dashboard/Payment/Payment";
 import PaymentSuccess from "../dashboard/Payment/PaymentSuccess";
 import PaymentCancel from "../dashboard/Payment/PaymentCancel";
-
 import AdminTotalEarnings from "../dashboard/admin/AdminTotalEarnings";
-import RevenueHistory from "../dashboard/tutor/RevenueHistory";
 import ProfileSetting from "../dashboard/ProfileSetting";
+import Home from "../pages/Home/Home";
+import Contact from "../pages/Home/Contact/Contact";
 
 const router = createBrowserRouter([
   {
@@ -103,14 +100,11 @@ const router = createBrowserRouter([
         path: "user-management",
         element: (
           <AdminRoute>
-            <UserManagement></UserManagement>
+            <UsersManagement></UsersManagement>
           </AdminRoute>
         ),
       },
-      {
-        path: "payment/:tuitionId",
-        element: <Payment></Payment>,
-      },
+      
       {
         path: "all-payment-history",
         element: <AllPaymentHistory></AllPaymentHistory>,
@@ -119,10 +113,7 @@ const router = createBrowserRouter([
         path: "revenue-history",
         element: <RevenueHistory></RevenueHistory>,
       },
-      {
-        path: "upadet-tuitions/:id",
-        element: <UpadetTuitions></UpadetTuitions>,
-      },
+      
       {
         path: "vew-user/:id",
         element: <VewUserProfile></VewUserProfile>,

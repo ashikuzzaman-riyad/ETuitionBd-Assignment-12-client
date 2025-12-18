@@ -1,10 +1,9 @@
-import React from 'react';
-import HeroSection from './HeroSection/HeroSection';
-import Provide from './HeroSection/Provide';
-import TuitionPost from './HeroSection/TuitiionPost';
-import LatestTutor from './HeroSection/LatestTutor';
-import HowItWorks from './HeroSection/HowItWorks';
-import WhyChooseUs from './HeroSection/WhyChooseUs';
+import HeroSection from "./HeroSection/HeroSection";
+import HowItWorks from "./HeroSection/HowItWorks";
+import LatestTutor from "./HeroSection/LatestTutor";
+import Provide from "./HeroSection/Provide";
+import TuitionPost from "./HeroSection/TuitiionPost";
+import WhyChooseUs from "./HeroSection/WhyChooseUs";
 
 const Home = () => {
     return (

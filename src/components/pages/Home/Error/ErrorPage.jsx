@@ -1,11 +1,10 @@
-import React from 'react';
-import { Link } from 'react-router';
+import React from "react";
+import { Link } from "react-router";
 
 const ErrorPage = () => {
-    return (
-      <section className="min-h-screen flex items-center justify-center px-6 bg-gradient-to-b from-green-50 to-white">
+  return (
+    <section className="min-h-screen flex items-center justify-center px-6 bg-gradient-to-b from-green-50 to-white">
       <div className="text-center">
-
         {/* Illustration */}
         <div className="mb-6">
           <img
@@ -39,7 +38,7 @@ const ErrorPage = () => {
         </Link>
       </div>
     </section>
-    );
+  );
 };
 
 export default ErrorPage;
