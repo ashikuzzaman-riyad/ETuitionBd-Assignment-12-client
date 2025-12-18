@@ -53,7 +53,9 @@ const PostTuition = () => {
         console.log(error);
       });
   }
-
+  const handleReset = () => {
+    reset()
+  }
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white rounded-2xl shadow">
       <h2 className="text-2xl font-semibold mb-4">Create Tuition Post</h2>
@@ -219,6 +221,7 @@ const PostTuition = () => {
           </button>
           <button
             type="button"
+            onClick={handleReset}
             
             className="px-4 py-2 rounded-xl border hover:bg-gray-100 transition"
           >

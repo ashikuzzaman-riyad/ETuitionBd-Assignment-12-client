@@ -2,18 +2,37 @@ import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { useAuth } from "../../hooks/useAuth";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
+import EmptyState from "../../shared/EmptyState";
+import { MdOutlineInbox, MdPayment } from "react-icons/md";
 
 const Payments = () => {
   
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
-  const { data: payment = [] } = useQuery({
-    queryKey: ["payment", user?.email],
-    queryFn: async () => {
-      const res = await axiosSecure.get(`/payments?studentEmail=${user.email}`);
-      return res.data;
-    },
-  });
+  const { data: payment = [],  } = useQuery({
+  queryKey: ["payment", user?.email],
+  enabled: !!user?.email, // 🔥 important
+  queryFn: async () => {
+    const res = await axiosSecure.get(
+      `/payments?email=${user.email}`
+    );
+    return res.data;
+  },
+});
+if(payment.length === 0) {
+  return<>
+  <EmptyState
+  icon={MdPayment}
+  title="No Payment Yet"
+  description="You haven't Any payment."
+  primaryAction={{
+    label: "MY Tuitions",
+    to: "/dashboard/my-tuitions",
+  }}
+/>;
+  </>
+} 
+
 
   return (
     <div className="p-6">

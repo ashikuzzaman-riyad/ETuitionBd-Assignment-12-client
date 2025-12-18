@@ -3,6 +3,9 @@ import { useAuth } from "../../hooks/useAuth";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
 import Swal from "sweetalert2";
+import EmptyOngoingState from "./EmptyOngoingState";
+import EmptyState from "../../shared/EmptyState";
+import { GrStatusUnknownSmall } from "react-icons/gr";
 
 const OngoingTuitions = () => {
   const [selectedApp, setSelectedApp] = useState(null);
@@ -79,6 +82,24 @@ const OngoingTuitions = () => {
         }
       });
     };
+    
+    if(tuition.length === 0) {
+      return <>
+      <EmptyState
+  icon={GrStatusUnknownSmall}
+  title="No Ongoing Tuitions"
+  description="It looks like you don't have any active sessions right now. Check your applied list or start a new application!"
+  primaryAction={{
+    label: "Find Tuitions",
+    to: "/dashboard/apply-tuitions",
+  }}
+  secondaryAction={{
+    label: "View History",
+    to: "/dashboard/my-application",
+  }}
+/>;
+      </>
+    }
 
   return (
     <div className="container mx-auto p-6">

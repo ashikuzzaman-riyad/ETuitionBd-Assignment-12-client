@@ -4,6 +4,9 @@ import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
 import Swal from "sweetalert2";
 import { useForm } from "react-hook-form";
+import EmptyState from "../../shared/EmptyState";
+
+import { BsBookHalf } from "react-icons/bs";
 
 const AppliedTuition = () => {
   const tutorModalRef = useRef()
@@ -68,6 +71,24 @@ const AppliedTuition = () => {
       });
     }
     
+  }
+
+  if(tuitions.length === 0){
+    return <>
+    <EmptyState
+  icon={BsBookHalf}
+  title="No Apply Tuitions"
+  description="You have no apply any tuitions!"
+  primaryAction={{
+    label: "Ongoing",
+    to: "/dashboard/ongoing",
+  }}
+  secondaryAction={{
+    label: "View History",
+    to: "/dashboard/my-application",
+  }}
+/>;
+    </>
   }
 
   return (

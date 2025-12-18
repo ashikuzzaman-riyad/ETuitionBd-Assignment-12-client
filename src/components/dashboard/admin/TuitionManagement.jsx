@@ -1,6 +1,9 @@
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
+import EmptyState from "../../shared/EmptyState";
+
+import { GrUserManager } from "react-icons/gr";
 
 const TuitionManagement = () => {
   const axiosSecure = useAxiosSecure();
@@ -59,12 +62,26 @@ const TuitionManagement = () => {
 
 
   
-  console.log(pending);
+  if(pending.length === 0) {
+    return <>
+    <EmptyState
+  icon={GrUserManager}
+  title="No Tuition post available"
+  description="No tuition posts available at the moment.
+Please check back later or try adjusting your filters!"
+  primaryAction={{
+    label: "User Management",
+    to: "/dashboard/user-management",
+  }}
+  
+/>;
+    </>
+  }
 
   return (
     <div className="p-6 container mx-auto">
       <h1 className="text-2xl font-bold mb-6 text-green-600">
-        Admin – User Management {pending.length}
+        Admin – Tuition Management {pending.length}
       </h1>
 
       <div className="overflow-x-auto bg-white shadow-lg rounded-xl">
@@ -133,7 +150,7 @@ const TuitionManagement = () => {
             {pending.length === 0 && (
               <tr>
                 <td colSpan="6" className="text-center p-5 text-gray-500">
-                  No users found.
+                  No Tuition found.
                 </td>
               </tr>
             )}

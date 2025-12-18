@@ -5,9 +5,12 @@ import { FiShield, FiShieldOff, FiUserPlus, FiUserX } from "react-icons/fi";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { Link } from "react-router";
+import { Eye } from "lucide-react";
+import { FaUserCog } from "react-icons/fa";
+import EmptyState from "../../shared/EmptyState";
 
 const UsersManagement = () => {
-  const [textSearch, setTextSearch] = useState();
+  const [textSearch, setTextSearch] = useState("");
   const axiosSecure = useAxiosSecure();
   const { data: user = [], refetch } = useQuery({
     queryKey: ["users", textSearch],
@@ -133,6 +136,22 @@ const UsersManagement = () => {
       }
     });
   };
+
+  if(user.length === 0) {
+    return <>
+    <EmptyState
+  icon={FaUserCog}
+  title="No user available"
+  description="No user available at the moment.
+Please check back later or try adjusting your filters!"
+  primaryAction={{
+    label: "Tuition Management",
+    to: "/dashboard/Tuitions-management",
+  }}
+  
+/>;
+    </>
+  }
   return (
     <div className="px-4 py-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
@@ -214,58 +233,99 @@ const UsersManagement = () => {
                   </div>
                 </td>
 
-                <td className="px-4 py-3 text-sm text-gray-700">
-                  {data.email}
+                <td className="px-4 py-3">
+                  <span className="inline-block px-3 py-1 text-sm text-gray-800 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors break-all">
+                    {data.email}
+                  </span>
                 </td>
 
-                <td className="px-4 py-3 text-sm font-medium text-gray-800 capitalize">
-                  {data.role}
+                <td className="px-4 py-3">
+                  <span
+                    className={`inline-block items-center px-3 py-1 text-sm font-semibold rounded-full capitalize
+      ${
+        data.role === "admin"
+          ? "bg-red-100 text-red-800"
+          : data.role === "tutor"
+          ? "bg-green-100 text-green-800"
+          : "bg-blue-100 text-blue-800"
+      }`}
+                  >
+                    {data.role}
+                  </span>
                 </td>
 
-                <td className="px-4 py-3 flex gap-2.5">
+                <td className="px-4 py-3 flex flex-wrap gap-2">
+                  {/* Admin actions */}
                   {data.role === "admin" ? (
                     <button
                       onClick={() => handleRemoveAdmin(data)}
-                      className="px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+                      title="Remove Admin"
+                      className="group flex items-center gap-1 rounded-lg bg-red-50 px-3 py-1.5 text-sm font-medium text-red-600 border border-red-200
+                 hover:bg-red-600 hover:text-white hover:border-red-600 transition-all duration-200"
                     >
-                      <FiShieldOff size={18} />
+                      <FiShieldOff
+                        size={16}
+                        className="transition-transform group-hover:scale-110"
+                      />
+                      Remove Admin
                     </button>
                   ) : (
                     <button
                       onClick={() => handleMakeAdmin(data)}
-                      className="px-3 py-1 bg-green-500 text-white rounded-lg hover:bg-green-600 transition"
+                      title="Make Admin"
+                      className="group flex items-center gap-1 rounded-lg bg-green-50 px-3 py-1.5 text-sm font-medium text-green-600 border border-green-200
+                 hover:bg-green-600 hover:text-white hover:border-green-600 transition-all duration-200"
                     >
-                      <FiShield size={18} />
+                      <FiShield
+                        size={16}
+                        className="transition-transform group-hover:scale-110"
+                      />
+                      Make Admin
                     </button>
                   )}
 
-                  {/* tutor add or remove  */}
+                  {/* Tutor actions */}
                   {data.role === "tutor" ? (
-                    // Remove Tutor button
                     <button
                       onClick={() => handleRemoveTutor(data)}
-                      className="px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600 transition flex items-center gap-2"
+                      title="Remove Tutor"
+                      className="group flex items-center gap-2 rounded-lg bg-red-50 px-3 py-1.5 text-sm font-medium text-red-600 border border-red-200
+                 hover:bg-red-600 hover:text-white hover:border-red-600 transition-all duration-200"
                     >
-                      <FiUserX size={18} />{" "}
-                      {/* Use FiUserX or another icon for remove */}
+                      <FiUserX
+                        size={16}
+                        className="transition-transform group-hover:scale-110"
+                      />
                       Remove Tutor
                     </button>
                   ) : (
-                    // Add Tutor button
                     <button
                       onClick={() => handleAddTutor(data)}
-                      className="px-3 py-1 bg-green-500 text-white rounded-lg hover:bg-green-600 transition flex items-center gap-2"
-                      disabled={data.role === "admin"} // Optional: disable if admin
+                      title="Add Tutor"
+                      disabled={data.role === "admin"} // optional: prevent adding tutor if admin
+                      className={`group flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium border transition-all duration-200
+                  ${
+                    data.role === "admin"
+                      ? "bg-gray-200 text-gray-400 border-gray-300 cursor-not-allowed"
+                      : "bg-green-50 text-green-600 border-green-200 hover:bg-green-600 hover:text-white hover:border-green-600"
+                  }`}
                     >
-                      <FiUserPlus size={18} /> {/* Icon for adding */}
+                      <FiUserPlus
+                        size={16}
+                        className="transition-transform group-hover:scale-110"
+                      />
                       Add Tutor
                     </button>
                   )}
                 </td>
 
                 <td className="px-4 py-3">
-                  <Link to={`/dashboard/vew-user/${data._id}`}>
-                    View Profile
+                  <Link
+                    to={`/dashboard/vew-user/${data._id}`}
+                    className="inline-flex items-center gap-2 rounded-lg bg-indigo-50 px-3 py-1.5 text-sm font-medium text-indigo-600 hover:bg-indigo-100 transition"
+                  >
+                    <Eye size={16} />
+                    View
                   </Link>
                 </td>
               </tr>

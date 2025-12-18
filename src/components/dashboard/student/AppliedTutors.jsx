@@ -1,46 +1,15 @@
-import React, { useState } from "react";
+
 import { useAuth } from "../../hooks/useAuth";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router";
 import Swal from "sweetalert2";
 
+import EmptyState from "../../shared/EmptyState";
+import { FaChalkboardTeacher } from "react-icons/fa";
+
 const AppliedTutors = () => {
-  const [applications, setApplications] = useState([
-    {
-      id: 1,
-      tutorName: "Abdullah Hasan",
-      subject: "Math",
-      class: "8",
-      location: "Mirpur 10",
-      expectedSalary: "3500",
-      experience: "2 years",
-      message: "I can teach 5 days a week. Evening time preferred.",
-      status: "Pending", // Pending | Confirmed | Rejected
-    },
-    {
-      id: 2,
-      tutorName: "Sadia Rahman",
-      subject: "English",
-      class: "6",
-      location: "Dhanmondi",
-      expectedSalary: "3000",
-      experience: "1.5 years",
-      message: "I prefer weekend classes. Female tutor requested.",
-      status: "Pending",
-    },
-    {
-      id: 3,
-      tutorName: "Rakib Hossain",
-      subject: "Physics",
-      class: "10",
-      location: "Uttara",
-      expectedSalary: "5000",
-      experience: "3 years",
-      message: "I explain topics with board work and notes.",
-      status: "Confirmed",
-    },
-  ]);
+ 
 
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
@@ -83,6 +52,19 @@ const AppliedTutors = () => {
       }
     });
   };
+  if(tuition.length === 0) {
+    return <>
+    <EmptyState
+  icon={FaChalkboardTeacher}
+  title="No Tutor Applied"
+  description="Tutor haven't applied to any tuitions yet."
+  primaryAction={{
+    label: "MY Tuition",
+    to: "/dashboard/my-tuitions",
+  }}
+/>;
+    </>
+  }
 
   const handlePayment = async (app) => {
     const paymentInfo = {

@@ -30,6 +30,8 @@ import AdminTotalEarnings from "../dashboard/admin/AdminTotalEarnings";
 import ProfileSetting from "../dashboard/ProfileSetting";
 import Home from "../pages/Home/Home";
 import Contact from "../pages/Home/Contact/Contact";
+import TutorRoute from "./TutorRoute";
+import AdminHome from "../dashboard/admin/AdminHome";
 
 const router = createBrowserRouter([
   {
@@ -77,6 +79,10 @@ const router = createBrowserRouter([
     ),
     children: [
       {
+       path: 'dashboard',
+       element: <AdminHome></AdminHome>
+      },
+      {
         path: "new-tuitions",
         element: <PostTuition></PostTuition>,
       },
@@ -107,30 +113,34 @@ const router = createBrowserRouter([
       
       {
         path: "all-payment-history",
-        element: <AllPaymentHistory></AllPaymentHistory>,
+        element: <AdminRoute><AllPaymentHistory></AllPaymentHistory></AdminRoute>,
       },
       {
-        path: "revenue-history",
-        element: <RevenueHistory></RevenueHistory>,
+        path: 'vew-total-earning',
+        element: <AdminRoute><AdminTotalEarnings></AdminTotalEarnings></AdminRoute>
       },
       
       {
         path: "vew-user/:id",
-        element: <VewUserProfile></VewUserProfile>,
+        element: <AdminRoute> <VewUserProfile></VewUserProfile></AdminRoute>,
         loader: ({ params }) =>
           fetch(`http://localhost:5000/users/${params.id}`),
       },
       {
         path: "tuitions-management",
-        element: <TuitionManagement></TuitionManagement>,
+        element: <AdminRoute> <TuitionManagement></TuitionManagement></AdminRoute>,
       },
       {
         path: "apply-tuitions",
-        element: <AppliedTuition></AppliedTuition>,
+        element: <TutorRoute><AppliedTuition></AppliedTuition></TutorRoute>,
       },
       {
         path: "ongoing",
-        element: <OngoingTuitions></OngoingTuitions>,
+        element: <TutorRoute><OngoingTuitions></OngoingTuitions></TutorRoute>,
+      },
+      {
+        path: "revenue-history",
+        element: <TutorRoute><RevenueHistory></RevenueHistory></TutorRoute>,
       },
       {
         path: "payment-success",
@@ -140,14 +150,8 @@ const router = createBrowserRouter([
         path: "payment-cancelled",
         element: <PaymentCancel />,
       },
-      {
-        path: 'revenue-history',
-        element:<RevenueHistory></RevenueHistory>
-      },
-      {
-        path: 'vew-total-earning',
-        element: <AdminTotalEarnings></AdminTotalEarnings>
-      },
+      
+      
 
       {
         path: "profile-setting",

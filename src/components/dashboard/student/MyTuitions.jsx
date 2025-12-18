@@ -1,12 +1,15 @@
 import React, { useRef, useState } from "react";
+import { GrStatusInfo } from "react-icons/gr";
+
 import { useAuth } from "../../hooks/useAuth";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
 import { FaEdit } from "react-icons/fa";
-import { MdDeleteOutline } from "react-icons/md";
+import { MdDeleteOutline, MdOutlineHourglassEmpty } from "react-icons/md";
 import Swal from "sweetalert2";
 import { Link } from "react-router";
 import { useForm } from "react-hook-form";
+import EmptyState from "../../shared/EmptyState";
 
 const MyTuitions = () => {
    const { register, handleSubmit, reset } = useForm();
@@ -123,6 +126,20 @@ const MyTuitions = () => {
       });
     }
   };
+  if(tuition.length === 0) {
+    return <>
+    <EmptyState
+  icon={GrStatusInfo }
+  title="No Application"
+  description="Create a new application!"
+  primaryAction={{
+    label: "New Application",
+    to: "/dashboard/new-tuitions",
+  }}
+  
+/>;
+    </>
+  }
 
   return (
     <div className="container mx-auto p-4">

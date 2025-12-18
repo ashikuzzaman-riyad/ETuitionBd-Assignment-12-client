@@ -1,13 +1,28 @@
 
-import { useLoaderData, useNavigate } from "react-router";
+import { useLoaderData, useNavigate, useParams } from "react-router";
 import { FiTrash2 } from "react-icons/fi";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import Swal from "sweetalert2";
+import Loading from "../../shared/Loading";
+import { useQuery } from "@tanstack/react-query";
 
 const VewUserProfile = () => {
-  const user = useLoaderData();
+   const { id } = useParams();
   const axiosSecure = useAxiosSecure();
-  const navigate = useNavigate(); // redirect after deletion
+  const navigate = useNavigate();
+
+  const { data: user, isLoading } = useQuery({
+    queryKey: ["user", id],
+    enabled: !!id,
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/users/${id}`);
+      return res.data;
+    },
+  });
+
+  if (isLoading) {
+    return <Loading></Loading>;
+  }
 
   if (!user?._id) {
     return (
@@ -16,7 +31,6 @@ const VewUserProfile = () => {
       </div>
     );
   }
-
   const handleDeleteUser = (id) => {
     Swal.fire({
       title: "Are you sure?",

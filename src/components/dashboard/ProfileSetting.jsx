@@ -1,142 +1,187 @@
 import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import Loading from "../shared/Loading";
+import { useForm } from "react-hook-form";
+
+import { FaCamera, FaEnvelope, FaKey, FaPhone } from "react-icons/fa6";
+import { FaEdit, FaSignOutAlt } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 const ProfileSetting = () => {
   //  const data = useLoaderData()
   const [openProfile, setOpenProfile] = useState(false);
-  const [openPassword, setOpenPassword] = useState(false);
-  const {user, loading} = useAuth()
-  console.log(user)
-  if(loading) return <Loading></Loading>
+   const [openPassword, setOpenPassword] = useState(false);
+  const { user, loading, updateUser, setLoading, logOut } = useAuth();
+  const { register, handleSubmit } = useForm();
 
+  if (loading) return <Loading></Loading>;
+
+  const onSubmit = (data) => {
+    console.log(data);
+    // update user profile to firebase
+
+    const userProfile = {
+      displayName: data.name,
+      photoURL: data.photoURL,
+    };
+
+    updateUser(userProfile)
+      .then(() => {
+        console.log("User profile updated successfully");
+        // Navigate after success
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error updating profile:", error.message);
+      });
+  };
  
 
-  return (
-    <div className="min-h-3/3 flex items-center justify-center  p-4">
-      <div className="max-w-md w-full p-6 bg-white shadow-xl rounded-2xl">
-        {/* Profile Card */}
-        <div className="text-center space-y-4">
-          <img
-            src={user?.photoURL}
-            alt="Profile"
-            className="w-24 h-24 mx-auto rounded-full border-4 border-green-500"
-          />
-          <h2 className="text-2xl font-bold text-green-600">{user?.displayName}</h2>
-          <p className="text-gray-600 text-sm">{user?.email}</p>
-          <p className="text-gray-600 text-sm">{user?.phone}</p>
+const handleLogoutClick = () => {
+  Swal.fire({
+    title: "Are you sure?",
+    text: "You will need to log in again to access your account.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#ef4444", // red
+    cancelButtonColor: "#6b7280",  // gray
+    confirmButtonText: "Logout",
+    cancelButtonText: "Cancel",
+    reverseButtons: true,
+  }).then((result) => {
+    if (result.isConfirmed) {
+      logOut();
+      Swal.fire({
+        title: "Logged out!",
+        icon: "success",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    }
+  });
+};
 
-          <div className="flex flex-col sm:flex-row justify-center gap-3 mt-4">
+
+
+  return (
+     <div className="min-h-[80vh] flex items-center justify-center p-6 relative overflow-hidden">
+      {/* Decorative Background Blobs */}
+      <div className="absolute top-0 -left-4 w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 -right-4 w-72 h-72 bg-secondary/10 rounded-full blur-3xl" />
+
+      {/* Profile Card */}
+      <div className="max-w-2xl w-full bg-base-100 border border-base-200 shadow-2xl rounded-[2rem] overflow-hidden relative z-10">
+        {/* Banner */}
+        <div className="h-32 bg-gradient-to-r from-green-500 to-emerald-600 w-full" />
+
+        <div className="px-8 pb-10">
+          {/* Avatar Section */}
+          <div className="relative -mt-16 mb-6 flex flex-col items-center sm:items-start sm:flex-row sm:gap-6">
+            <div className="relative group">
+              <img
+                src={user?.photoURL || "https://via.placeholder.com/150"}
+                alt="Profile"
+                className="w-32 h-32 rounded-3xl object-cover border-4 border-base-100 shadow-xl group-hover:brightness-90 transition-all"
+              />
+              <button 
+                onClick={() => setOpenProfile(true)}
+                className="absolute bottom-2 right-2 p-2 bg-white text-green-600 rounded-xl shadow-lg hover:scale-110 transition-transform"
+              >
+                <FaCamera size={14} />
+              </button>
+            </div>
+
+            <div className="mt-4 sm:mt-16 text-center sm:text-left flex-1">
+              <h2 className="text-3xl font-black text-base-content tracking-tight">
+                {user?.displayName}
+              </h2>
+              <div className="badge badge-success badge-outline mt-1 px-4 py-3 font-semibold">
+                Verified Account
+              </div>
+            </div>
+          </div>
+
+          {/* Info Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+            <div className="flex items-center gap-4 p-4 bg-base-200/50 rounded-2xl border border-base-300/50">
+              <div className="p-3 bg-white text-green-600 rounded-xl shadow-sm">
+                <FaEnvelope />
+              </div>
+              <div>
+                <p className="text-xs text-base-content/50 font-bold uppercase tracking-wider">Email Address</p>
+                <p className="text-sm font-medium">{user?.email}</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4 p-4 bg-base-200/50 rounded-2xl border border-base-300/50">
+              <div className="p-3 bg-white text-green-600 rounded-xl shadow-sm">
+                <FaPhone />
+              </div>
+              <div>
+                <p className="text-xs text-base-content/50 font-bold uppercase tracking-wider">Phone Number</p>
+                <p className="text-sm font-medium">{user?.phone || "Not Provided"}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex flex-wrap gap-4 mt-10">
             <button
               onClick={() => setOpenProfile(true)}
-              className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
+              className="btn btn-primary btn-md rounded-2xl normal-case gap-2 px-8"
             >
-              Edit Profile
+              <FaEdit /> Edit Profile
             </button>
+
             <button
               onClick={() => setOpenPassword(true)}
-              className="px-4 py-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg transition-colors"
+              className="btn btn-ghost border-base-300 bg-base-200/50 btn-md rounded-2xl normal-case gap-2 px-8"
             >
-              Change Password
+              <FaKey /> Security Settings
+            </button>
+
+            <button
+              onClick={handleLogoutClick}
+              className="btn btn-error btn-md rounded-2xl normal-case gap-2 px-8 hover:scale-105 transition-transform shadow-md shadow-red-500/20"
+            >
+              <FaSignOutAlt /> Logout
             </button>
           </div>
         </div>
+      </div>
 
-        {/* PROFILE UPDATE DIALOG */}
-        {openProfile && (
-          <dialog open className="modal">
-            <div className="modal-box space-y-4 p-6 sm:p-8 rounded-xl bg-green-50">
-              <h3 className="text-xl font-bold text-green-700">Update Profile</h3>
-
-              <div>
-                <label className="block text-sm font-medium mb-1 text-green-800">
-                  {user?.name}
-                </label>
+      {/* MODAL: UPDATE PROFILE */}
+      {openProfile && (
+        <div className="modal modal-open backdrop-blur-sm">
+          <div className="modal-box rounded-[2rem] p-8 max-w-md border border-base-200 shadow-2xl">
+            <h3 className="text-2xl font-black mb-6">Update Profile</h3>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              <div className="form-control">
+                <label className="label font-bold text-xs uppercase tracking-widest opacity-60">Full Name</label>
                 <input
-                  className="w-full border border-green-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-green-400"
+                  {...register("name")}
+                  className="input input-bordered bg-base-200 border-none rounded-xl focus:ring-2 focus:ring-green-500"
                   placeholder="Your name"
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-1 text-green-800">
-                  {user?.photoURL}
-                </label>
+              <div className="form-control">
+                <label className="label font-bold text-xs uppercase tracking-widest opacity-60">Photo URL</label>
                 <input
-                  type="text"
-                  className="w-full border border-green-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-green-400"
-                  placeholder="you@example.com"
+                  {...register("photoURL")}
+                  className="input input-bordered bg-base-200 border-none rounded-xl focus:ring-2 focus:ring-green-500"
+                  placeholder="Image link"
                 />
               </div>
 
-              
-
-              <div className="modal-action flex justify-end gap-2">
-                <button
-                  className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300"
-                  onClick={() => setOpenProfile(false)}
-                >
-                  Close
-                </button>
-                <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
-                  Save
-                </button>
+              <div className="modal-action gap-3">
+                <button type="button" className="btn btn-ghost rounded-xl" onClick={() => setOpenProfile(false)}>Cancel</button>
+                <button type="submit" className="btn btn-primary rounded-xl px-8 shadow-lg shadow-green-500/20">Save Changes</button>
               </div>
-            </div>
-          </dialog>
-        )}
-
-        {/* CHANGE PASSWORD DIALOG */}
-        {openPassword && (
-          <dialog open className="modal">
-            <div className="modal-box space-y-4 p-6 sm:p-8 rounded-xl bg-green-50">
-              <h3 className="text-xl font-bold text-green-700">Change Password</h3>
-
-              <div>
-                <label className="block text-sm font-medium mb-1 text-green-800">
-                  Old Password
-                </label>
-                <input
-                  type="password"
-                  className="w-full border border-green-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-green-400"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-1 text-green-800">
-                  New Password
-                </label>
-                <input
-                  type="password"
-                  className="w-full border border-green-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-green-400"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-1 text-green-800">
-                  Confirm New Password
-                </label>
-                <input
-                  type="password"
-                  className="w-full border border-green-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-green-400"
-                />
-              </div>
-
-              <div className="modal-action flex justify-end gap-2">
-                <button
-                  className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300"
-                  onClick={() => setOpenPassword(false)}
-                >
-                  Close
-                </button>
-                <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
-                  Update Password
-                </button>
-              </div>
-            </div>
-          </dialog>
-        )}
-      </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

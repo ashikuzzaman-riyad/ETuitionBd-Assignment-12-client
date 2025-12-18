@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
+import EmptyApplication from "./EmptyApplication";
+import EmptyState from "../../shared/EmptyState";
+import { FaPersonDotsFromLine } from "react-icons/fa6";
 
 const MyApplications = () => {
  
@@ -17,7 +20,24 @@ const MyApplications = () => {
       return res.data;
     },
   });
-
+ 
+   if(tuition.length === 0) {
+    return <>
+    <EmptyState
+  icon={FaPersonDotsFromLine}
+  title="No Applications Yet"
+  description="You haven't applied to any tuition jobs yet. There are hundreds of students waiting for a tutor like you!"
+  primaryAction={{
+    label: "Find Tuitions Jobs",
+    to: "/dashboard/apply-tuitions",
+  }}
+  secondaryAction={{
+    label: "Ongoing",
+    to: "/dashboard/ongoing",
+  }}
+/>;
+    </>
+   }
   return (
    <div className="container mx-auto p-6">
   <h1 className="text-3xl font-bold mb-8 text-gray-800">

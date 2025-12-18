@@ -12,17 +12,20 @@ const Register = () => {
   const location = useLocation();
   const navigate = useNavigate();
   //   const axiosSecure = useSecureAxios();
-  const [loading, setLoading] = useState(false);
+  
   const {
     register,
     handleSubmit,
 
     formState: { errors },
   } = useForm();
-  const { createUser, updateUser } = useAuth();
+  const { createUser, updateUser, } = useAuth();
+   const [loading, setLoading] = useState(false);
   const axiosSecure= useAxiosSecure()
 
   const onSubmit = (data) => {
+    setLoading(true)
+   
     const finalData = { ...data, role };
     const profileImg = finalData.photo[0];
     console.log(profileImg);
@@ -56,6 +59,7 @@ const Register = () => {
                         axiosSecure.post('/users', userInfo)
                         .then(res =>{
                             if(res.data.insertedId){
+                              
                                 console.log('user created in the database');
                             }
                         })
@@ -69,8 +73,10 @@ const Register = () => {
 
           updateUser(userProfile)
             .then(() => {
+              setLoading(false)
               console.log("user profile updated done.");
               navigate(location.state || "/");
+              
             })
             .catch((error) => console.log(error));
         });
@@ -202,7 +208,11 @@ const Register = () => {
             type="submit"
             className="w-full bg-green-600 text-white py-2 rounded-lg font-semibold hover:bg-green-700 transition-all shadow-md"
           >
-            Register
+           {loading ? (
+    <span className="loading loading-spinner loading-sm"></span>
+  ) : (
+    "Register"
+  )}
           </button>
         </form>
 

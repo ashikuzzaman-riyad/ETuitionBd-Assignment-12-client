@@ -1,6 +1,7 @@
 import React from 'react';
 import useAxiosSecure from '../hooks/useAxiosSecure';
 import { useQuery } from '@tanstack/react-query';
+import { Inbox } from 'lucide-react';
 
 const TuitionCard = () => {
 
@@ -61,10 +62,23 @@ const axiosSecure = useAxiosSecure();
   const { data: tuition = [], } = useQuery({
     queryKey: ["myTuitions", ],
     queryFn: async () => {
-      const res = await axiosSecure.get(`/new-tuitions`);
+      const res = await axiosSecure.get(`/new-tuitions?status=pending`);
       return res.data.slice(0, 8);
     },
   });
+  if (tuition.length === 0) {
+  return (
+    <div className="flex flex-col my-27 items-center justify-center py-20 text-center">
+      <Inbox className="w-12 h-12 text-gray-300 mb-4" />
+      <h3 className="text-lg font-semibold text-gray-700">
+        No Pending Tuition
+      </h3>
+      <p className="text-sm text-gray-400 mt-1">
+        You're all caught up 🎉
+      </p>
+    </div>
+  );
+}
 
     return (
        <div className="grid grid-cols-1 container mx-auto sm:grid-cols-2 lg:grid-cols-4 gap-6 p-6">

@@ -1,343 +1,148 @@
-import React from "react";
-import {
-  FaChalkboardTeacher,
-  FaHandHoldingUsd,
-  FaUserCog,
-} from "react-icons/fa";
+import React, { useState } from "react";
+
 import { GrStatusUnknownSmall, GrUserManager } from "react-icons/gr";
 import { BsBookHalf } from "react-icons/bs";
 import { VscGitStashApply } from "react-icons/vsc";
 import { Link, NavLink, Outlet } from "react-router";
 import { PiStudentThin } from "react-icons/pi";
-import { MdPayment } from "react-icons/md";
-import { FaGear, FaPersonDotsFromLine } from "react-icons/fa6";
+import { MdPayment, MdOutlineHome } from "react-icons/md";
 import { SiScikitlearn } from "react-icons/si";
 import { TbCreditCardPay } from "react-icons/tb";
-import Logo from "../shared/Logo";
 import useRole from "../hooks/useRole";
+import { FaChalkboardTeacher, FaHandHoldingUsd, FaUserCog } from "react-icons/fa";
+import { FaChevronLeft, FaChevronRight, FaGear, FaPersonDotsFromLine } from "react-icons/fa6";
+import { useAuth } from "../hooks/useAuth";
+
+// Refined Sidebar Item for Collapsible Mode
+const SidebarItem = ({ to, icon: Icon, label, isCollapsed }) => (
+  <li className={isCollapsed ? "tooltip tooltip-right" : ""} data-tip={label}>
+    <NavLink
+      to={to}
+      className={({ isActive }) =>
+        `flex items-center px-4 py-3 rounded-xl transition-all duration-300 group ${
+          isActive 
+            ? "bg-primary text-primary-content shadow-lg shadow-primary/20" 
+            : "text-base-content/70 hover:text-primary"
+        }`
+      }
+    >
+      {/* Fixed width icon so it never moves */}
+      <Icon className="size-5 min-w-[20px] shrink-0" />
+      
+      {/* The Text Label */}
+      <span 
+        className={`font-medium transition-all duration-300 whitespace-nowrap overflow-hidden ${
+          isCollapsed 
+            ? "w-0 opacity-0 ml-0" 
+            : "w-48 opacity-100 ml-4"
+        }`}
+      >
+        {label}
+      </span>
+    </NavLink>
+  </li>
+);
 
 const DashboardLayout = () => {
+  const {user} = useAuth()
   const { role } = useRole();
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
   return (
-    <div className="drawer lg:drawer-open ">
-      <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
-      <div className="drawer-content">
+    <div className="drawer lg:drawer-open  min-h-screen">
+      <input id="my-drawer" type="checkbox" className="drawer-toggle" />
+      
+      {/* Main Content */}
+      <div className="drawer-content flex flex-col  transition-all duration-300">
         {/* Navbar */}
-        <nav className="navbar w-full bg-base-300">
-          <label
-            htmlFor="my-drawer-4"
-            aria-label="open sidebar"
-            className="btn btn-square btn-ghost"
-          >
-            {/* Sidebar toggle icon */}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              strokeLinejoin="round"
-              strokeLinecap="round"
-              strokeWidth="2"
-              fill="none"
-              stroke="currentColor"
-              className="my-1.5 inline-block size-4"
-            >
-              <path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path>
-              <path d="M9 4v16"></path>
-              <path d="M14 10l2 2l-2 2"></path>
-            </svg>
-          </label>
-          <div className="px-4">Navbar Title</div>
-        </nav>
-        {/* outlet */}
-        <Outlet></Outlet>
+        <div className="navbar w-full bg-base-100/80 border-b border-base-200 px-6 sticky top-0 z-20 backdrop-blur-md">
+          <div className="flex-1">
+            <label htmlFor="my-drawer" className="btn btn-square btn-ghost lg:hidden">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="w-6 h-6 stroke-current"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </label>
+            <h1 className="text-xl font-bold tracking-tight px-2">Dashboard</h1>
+          </div>
+          
+          <div className="flex-none gap-2">
+             <div className="avatar placeholder border-2 border-primary/20 rounded-full p-0.5">
+                <div className="bg-neutral text-neutral-content rounded-full w-9">
+                  <span ><img src={user.photoURL} alt="" /></span>
+                </div>
+             </div>
+          </div>
+        </div>
+
+        <main className="p-4 md:p-8">
+          <Outlet />
+        </main>
       </div>
 
-      <div className="drawer-side is-drawer-close:overflow-visible">
-        <label
-          htmlFor="my-drawer-4"
-          aria-label="close sidebar"
-          className="drawer-overlay"
-        ></label>
-        <div className="flex min-h-full flex-col items-start bg-base-200 is-drawer-close:w-14 is-drawer-open:w-64">
-          {/* Sidebar content here */}
-          <ul className="menu w-full grow">
-            {/* List item */}
-
-            <li>
-              <Link to="/">
-                <img
-                  src="https://i.ibb.co/RTk6zL5F/text-books-library-isolated-icon-24877-83372.jpg"
-                  className="w-10 md:12"
-                  alt=""
-                />
+      {/* Sidebar */}
+      <div className="drawer-side z-30">
+        <label htmlFor="my-drawer" className="drawer-overlay"></label>
+        <div 
+          className={`flex flex-col h-full  border-r border-base-300 transition-all duration-300 ease-in-out p-4 ${
+            isCollapsed ? "w-24" : "w-72"
+          }`}
+        >
+          {/* Logo & Toggle Section */}
+          <div className="flex items-center justify-between mb-8 px-2">
+            {!isCollapsed && (
+              <Link to='/' className="flex items-center gap-3 animate-in fade-in duration-500">
+                <div className="bg-primary p-2 rounded-lg">
+                    <BsBookHalf className="text-primary-content size-5" />
+                </div>
+                <span className="text-xl font-black text-primary tracking-tighter">EDUCORE</span>
               </Link>
-            </li>
+            )}
+            <button 
+              onClick={() => setIsCollapsed(!isCollapsed)}
+              className="btn btn-sm btn-circle btn-ghost text-primary hidden lg:flex"
+            >
+              {isCollapsed ? <FaChevronRight /> : <FaChevronLeft />}
+            </button>
+          </div>
 
-             <li>
-                  <button
-                    className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                    data-tip="Homepage"
-                  >
-                    {/* Home icon */}
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      strokeLinejoin="round"
-                      strokeLinecap="round"
-                      strokeWidth="2"
-                      fill="none"
-                      stroke="currentColor"
-                      className="my-1.5 inline-block size-4"
-                    >
-                      <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path>
-                      <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                    </svg>
-                    <span className="is-drawer-close:hidden">Homepage</span>
-                  </button>
-                </li>
-            {/* student layout */}
+          {/* Navigation Links */}
+          <ul  className="menu  menu-md p-0 gap-2 grow">
+            <SidebarItem to='dashboard' icon={MdOutlineHome} label="Home" isCollapsed={isCollapsed} />
+            
+            <div className={`divider opacity-50 px-4 text-[10px] uppercase font-bold tracking-widest ${isCollapsed ? 'hidden' : ''}`}>
+               Management
+            </div>
 
-            {role === "student"  && (
+            {role === "student" && (
               <>
-               
-                {/* My Tuitions */}
-                <li>
-                  <button
-                    className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                    data-tip=" My Tuitions"
-                  >
-                    {/* Home icon */}
-                    <NavLink
-                      className="hover:text-green-600"
-                      to="/dashboard/my-tuitions"
-                    >
-                      <PiStudentThin className="my-1.5 inline-block size-4" />
-                      <span className="is-drawer-close:hidden">
-                        My Tuitions
-                      </span>
-                    </NavLink>
-                  </button>
-                </li>
-                {/* New Tuitions */}
-                <li>
-                  <button
-                    className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                    data-tip="New Tuitions "
-                  >
-                    {/* Home icon */}
-                    <NavLink
-                      className="hover:text-green-600"
-                      to="/dashboard/new-tuitions"
-                    >
-                      <VscGitStashApply className="my-1.5 inline-block size-4" />
-                      <span className="is-drawer-close:hidden">My-Parcel</span>
-                    </NavLink>
-                  </button>
-                </li>
-                {/* Applied Tutor */}
-                <li>
-                  <button
-                    className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                    data-tip="Applied Tutor"
-                  >
-                    {/* Home icon */}
-                    <NavLink
-                      className="hover:text-green-600"
-                      to="/dashboard/applied-tutor"
-                    >
-                      <FaChalkboardTeacher className="my-1.5 inline-block size-4" />
-                      <span className="is-drawer-close:hidden">
-                        Applied Tutor
-                      </span>
-                    </NavLink>
-                  </button>
-                </li>
-                {/* Payment */}
-                <li>
-                  <button
-                    className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                    data-tip="Payment"
-                  >
-                    {/* Home icon */}
-                    <NavLink
-                      className="hover:text-green-600"
-                      to="/dashboard/payment"
-                    >
-                      <MdPayment className="my-1.5 inline-block size-4" />
-                      <span className="is-drawer-close:hidden">Payment</span>
-                    </NavLink>
-                  </button>
-                </li>
+                <SidebarItem to="/dashboard/my-tuitions" icon={PiStudentThin} label="My Tuitions" isCollapsed={isCollapsed} />
+                <SidebarItem to="/dashboard/new-tuitions" icon={VscGitStashApply} label="New Tuitions" isCollapsed={isCollapsed} />
+                <SidebarItem to="/dashboard/applied-tutor" icon={FaChalkboardTeacher} label="Applied Tutor" isCollapsed={isCollapsed} />
+                <SidebarItem to="/dashboard/payment" icon={MdPayment} label="Payment" isCollapsed={isCollapsed} />
               </>
             )}
 
-            {/* tutor navLink */}
-
-            {/* My Application */}
             {role === "tutor" && (
               <>
-                <li>
-                  <button
-                    className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                    data-tip="My Application"
-                  >
-                    <NavLink
-                      className="hover:text-green-600"
-                      to="/dashboard/my-application"
-                    >
-                      <FaPersonDotsFromLine className="my-1.5 inline-block size-4" />
-                      <span className="is-drawer-close:hidden">
-                        My Application
-                      </span>
-                    </NavLink>
-                  </button>
-                </li>
-                {/* status ongoing */}
-                <li>
-                  <button
-                    className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                    data-tip=" ongoing"
-                  >
-                    <NavLink
-                      className="hover:text-green-600"
-                      to="/dashboard/ongoing"
-                    >
-                      <GrStatusUnknownSmall className="my-1.5 inline-block size-4" />
-                      <span className="is-drawer-close:hidden">Ongoing</span>
-                    </NavLink>
-                  </button>
-                </li>
-
-                {/* Apply Tuitions */}
-                <li>
-                  <button
-                    className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                    data-tip="Applied Tuitions"
-                  >
-                    <NavLink
-                      className="hover:text-green-600"
-                      to="/dashboard/apply-tuitions"
-                    >
-                      <BsBookHalf className="my-1.5 inline-block size-4" />
-                      <span className="is-drawer-close:hidden">
-                        Apply Tuitions
-                      </span>
-                    </NavLink>
-                  </button>
-                </li>
-                {/* Revenue History */}
-                <li>
-                  <button
-                    className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                    data-tip="Revenue History "
-                  >
-                    <NavLink
-                      className="hover:text-green-600"
-                      to="/dashboard/revenue-history"
-                    >
-                      <FaHandHoldingUsd className="my-1.5 inline-block size-4" />
-                      <span className="is-drawer-close:hidden">
-                        Revenue History
-                      </span>
-                    </NavLink>
-                  </button>
-                </li>
+                <SidebarItem to="/dashboard/my-application" icon={FaPersonDotsFromLine} label="My Application" isCollapsed={isCollapsed} />
+                <SidebarItem to="/dashboard/ongoing" icon={GrStatusUnknownSmall} label="Ongoing" isCollapsed={isCollapsed} />
+                <SidebarItem to="/dashboard/apply-tuitions" icon={BsBookHalf} label="Apply Tuitions" isCollapsed={isCollapsed} />
+                <SidebarItem to="/dashboard/revenue-history" icon={FaHandHoldingUsd} label="Revenue History" isCollapsed={isCollapsed} />
               </>
             )}
-            {/* Admin route */}
 
-            {/* User */}
             {role === "admin" && (
               <>
-                <li>
-                  <button
-                    className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                    data-tip="User Management"
-                  >
-                    <NavLink
-                      className="hover:text-green-600"
-                      to="/dashboard/user-management"
-                    >
-                      <FaUserCog className="my-1.5 inline-block size-4" />
-                      <span className="is-drawer-close:hidden">
-                        User Management
-                      </span>
-                    </NavLink>
-                  </button>
-                </li>
-                {/* Tuitions Management */}
-                <li>
-                  <button
-                    className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                    data-tip=" Tuitions Management"
-                  >
-                    <NavLink
-                      className="hover:text-green-600"
-                      to="/dashboard/tuitions-management"
-                    >
-                      <GrUserManager className="my-1.5 inline-block size-4" />
-                      <span className="is-drawer-close:hidden">
-                        Tuitions Management
-                      </span>
-                    </NavLink>
-                  </button>
-                </li>
-
-                {/* Vew Total Earning */}
-                <li>
-                  <button
-                    className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                    data-tip="Vew Total Earning"
-                  >
-                    <NavLink
-                      className="hover:text-green-600"
-                      to="/dashboard/vew-total-earning"
-                    >
-                      <SiScikitlearn className="my-1.5 inline-block size-4" />
-                      <span className="is-drawer-close:hidden">
-                        Vew Total Earning{" "}
-                      </span>
-                    </NavLink>
-                  </button>
-                </li>
-                {/* all payment History */}
-                <li>
-                  <button
-                    className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                    data-tip="All Payment History "
-                  >
-                    <NavLink
-                      className="hover:text-green-600"
-                      to="/dashboard/all-payment-history"
-                    >
-                      <TbCreditCardPay className="my-1.5 inline-block size-4" />
-                      <span className="is-drawer-close:hidden">
-                        All Payment History
-                      </span>
-                    </NavLink>
-                  </button>
-                </li>
-                {/* List item */}
-               
+                <SidebarItem to="/dashboard/user-management" icon={FaUserCog} label="User Management" isCollapsed={isCollapsed} />
+                <SidebarItem to="/dashboard/tuitions-management" icon={GrUserManager} label="Tuition Management" isCollapsed={isCollapsed} />
+                <SidebarItem to="/dashboard/vew-total-earning" icon={SiScikitlearn} label="Total Earning" isCollapsed={isCollapsed} />
+                <SidebarItem to="/dashboard/all-payment-history" icon={TbCreditCardPay} label="Payment History" isCollapsed={isCollapsed} />
               </>
             )}
-             <li>
-                  <button
-                    className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
-                    data-tip="Profile Settings"
-                  >
-                    {/* Settings icon */}
-                    <NavLink
-                      className="hover:text-green-600"
-                      to="/dashboard/Profile-setting"
-                    >
-                      <FaGear className="my-1.5 inline-block size-4" />
-                      <span className="is-drawer-close:hidden">
-                        Profile Setting
-                      </span>
-                    </NavLink>
-                  </button>
-                </li>
           </ul>
+
+          {/* Footer Section */}
+          <div className="mt-auto pt-4 border-t border-base-300">
+            <SidebarItem to="/dashboard/Profile-setting" icon={FaGear} label="Settings" isCollapsed={isCollapsed} />
+          </div>
         </div>
       </div>
     </div>
