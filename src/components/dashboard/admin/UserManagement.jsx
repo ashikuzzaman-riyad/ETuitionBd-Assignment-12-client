@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { Link } from "react-router";
 import { Eye } from "lucide-react";
-import { FaUserCog } from "react-icons/fa";
+import { FaUserAltSlash, FaUserCog } from "react-icons/fa";
 import EmptyState from "../../shared/EmptyState";
 
 const UsersManagement = () => {
@@ -137,21 +137,11 @@ const UsersManagement = () => {
     });
   };
 
-  if(user.length === 0) {
-    return <>
-    <EmptyState
-  icon={FaUserCog}
-  title="No user available"
-  description="No user available at the moment.
-Please check back later or try adjusting your filters!"
-  primaryAction={{
-    label: "Tuition Management",
-    to: "/dashboard/Tuitions-management",
-  }}
   
-/>;
-    </>
-  }
+  
+
+    
+  
   return (
     <div className="px-4 py-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
@@ -332,7 +322,17 @@ Please check back later or try adjusting your filters!"
             ))}
           </tbody>
         </table>
+        
       </div>
+      {(!user || user.length === 0) && (
+  <div className="my-12">
+    <EmptyState
+      icon={FaUserAltSlash}
+      title="No Tuition Found"
+      description="No tuition posts available with selected filters."
+    />
+  </div>
+)}
     </div>
   );
 };
