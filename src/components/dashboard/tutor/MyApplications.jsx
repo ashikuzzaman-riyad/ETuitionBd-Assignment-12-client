@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+
 import { useAuth } from "../../hooks/useAuth";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
-import EmptyApplication from "./EmptyApplication";
+
 import EmptyState from "../../shared/EmptyState";
 import { FaPersonDotsFromLine } from "react-icons/fa6";
 

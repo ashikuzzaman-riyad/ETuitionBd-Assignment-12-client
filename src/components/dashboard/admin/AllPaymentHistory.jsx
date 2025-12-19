@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
+import EmptyState from "../../shared/EmptyState";
+import { MdPayment } from "react-icons/md";
 
 const AllPaymentHistory = () => {
   const paymentsss = [
@@ -41,6 +43,21 @@ const AllPaymentHistory = () => {
       return res.data;
     },
   });
+  if(payments.length === 0) {
+    return <>
+    <EmptyState
+  icon={MdPayment}
+  title="No Payment Available"
+  description="No Payment available at the moment.
+Please check back later or try adjusting your filters!"
+  primaryAction={{
+    label: "User Management",
+    to: "/dashboard/user-management",
+  }}
+  
+/>;
+    </>
+  }
 
   return (
     <div className="p-6">

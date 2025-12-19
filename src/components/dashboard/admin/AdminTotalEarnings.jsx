@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { DollarSign, Users, CreditCard } from "lucide-react";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
+import { MdPayment } from "react-icons/md";
+import EmptyState from "../../shared/EmptyState";
 
 export default function AdminTotalEarnings() {
   const [payments, setPayments] = useState([]);
@@ -21,7 +23,7 @@ export default function AdminTotalEarnings() {
         console.error(err);
         setLoading(false);
       });
-  }, []);
+  }, [axiosSecure]);
 
   if (loading) {
     return <p className="p-6">Loading admin earnings...</p>;
@@ -38,7 +40,21 @@ export default function AdminTotalEarnings() {
   const totalStudents = new Set(
     payments.map((p) => p.customerEmail)
   ).size;
-
+  if(payments.length === 0) {
+    return <>
+    <EmptyState
+  icon={MdPayment}
+  title="No Earning Available"
+  description="No earning available at the moment.
+Please check back later or try adjusting your filters!"
+  primaryAction={{
+    label: "User Management",
+    to: "/dashboard/user-management",
+  }}
+  
+/>;
+    </>
+  }
   return (
     <div className="p-6 space-y-6">
       <h2 className="text-3xl font-bold text-gray-800">

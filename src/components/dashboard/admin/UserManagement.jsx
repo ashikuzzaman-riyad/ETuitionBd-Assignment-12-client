@@ -13,9 +13,9 @@ const UsersManagement = () => {
   const [textSearch, setTextSearch] = useState("");
   const axiosSecure = useAxiosSecure();
   const { data: user = [], refetch } = useQuery({
-    queryKey: ["users", textSearch],
+    queryKey: ["all-users", textSearch],
     queryFn: async () => {
-      const res = await axiosSecure.get(`/users?searchText=${textSearch}`);
+      const res = await axiosSecure.get(`/all-users?searchText=${textSearch}`);
       return res.data;
     },
   });

@@ -74,15 +74,10 @@ const MyTuitions = () => {
   const openModal = (student) => {
   setStudentUpdate(student);
   tuitionRef.current.showModal();
-  reset({
-    studentBudget: student.studentBudget,
-    studentLocation: student.studentLocation,
-    studentClass: student.studentClass,
-    studentSubjects: student.studentSubjects
-  });
+  reset();
 };
 
-   console.log(studentUpdate)
+  
     // UPDATE Tuition
   const onSubmit = async (data) => {
     if (!studentUpdate?._id)

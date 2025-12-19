@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,  } from "react";
 import { useAuth } from "../hooks/useAuth";
 import Loading from "../shared/Loading";
 import { useForm } from "react-hook-form";
@@ -7,44 +7,77 @@ import { FaCamera, FaEnvelope, FaKey, FaPhone } from "react-icons/fa6";
 import { FaEdit, FaSignOutAlt } from "react-icons/fa";
 import Swal from "sweetalert2";
 
+import useAxiosSecure from "../hooks/useAxiosSecure";
+import { useQuery } from "@tanstack/react-query";
+
+
 const ProfileSetting = () => {
-  //  const data = useLoaderData()
+  const [userId, SetUserId] = useState(null)
   const [openProfile, setOpenProfile] = useState(false);
    const [openPassword, setOpenPassword] = useState(false);
   const { user, loading, updateUser, setLoading, logOut } = useAuth();
   const { register, handleSubmit } = useForm();
-
-  if (loading) return <Loading></Loading>;
-
-  const onSubmit = (data) => {
-    console.log(data);
-    // update user profile to firebase
-
-    const userProfile = {
-      displayName: data.name,
-      photoURL: data.photoURL,
-    };
-
-    updateUser(userProfile)
-      .then(() => {
-        console.log("User profile updated successfully");
-        // Navigate after success
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error updating profile:", error.message);
-      });
-  };
+ const axiosSecure = useAxiosSecure()
+ 
  
 
+   const { data: userssss = [], isLoading, refetch } = useQuery({
+  queryKey: ["user", user?.email],
+  
+  queryFn: async () => {
+    const res = await axiosSecure.get(`/users?email=${user.email}`);
+    return res.data;
+  },
+});
+const users = userssss
+ 
+const handleOpen =(users) =>{
+setOpenProfile(true)
+ console.log(users)
+SetUserId(users)
+}
+
+  const onSubmit = async (data) => {
+  if (!userId?._id) {
+    Swal.fire("Error", "User ID not found", "error");
+    return;
+  }
+
+  const statusInfo = {
+    displayName: data.name,
+    photoURL: data.photoURL,
+  };
+
+  const res = await axiosSecure.patch(
+    `/users/${userId._id}`,
+    statusInfo
+  );
+
+  if (res.data.modifiedCount > 0) {
+    Swal.fire({
+      icon: "success",
+      title: "Updated Successfully!",
+      timer: 1500,
+      showConfirmButton: false,
+    });
+    refetch();
+    setOpenProfile(false);
+  }
+
+  await updateUser(statusInfo);
+  setLoading (false)
+};
+
+ 
+ 
 const handleLogoutClick = () => {
   Swal.fire({
     title: "Are you sure?",
     text: "You will need to log in again to access your account.",
     icon: "warning",
     showCancelButton: true,
-    confirmButtonColor: "#ef4444", // red
-    cancelButtonColor: "#6b7280",  // gray
+    confirmButtonColor: "#ef4444", 
+    cancelButtonColor: "#6b7280",  
     confirmButtonText: "Logout",
     cancelButtonText: "Cancel",
     reverseButtons: true,
@@ -62,7 +95,7 @@ const handleLogoutClick = () => {
 };
 
 
-
+ if (loading) return <Loading></Loading>;
   return (
      <div className="min-h-[80vh] flex items-center justify-center p-6 relative overflow-hidden">
       {/* Decorative Background Blobs */}
@@ -79,7 +112,7 @@ const handleLogoutClick = () => {
           <div className="relative -mt-16 mb-6 flex flex-col items-center sm:items-start sm:flex-row sm:gap-6">
             <div className="relative group">
               <img
-                src={user?.photoURL || "https://via.placeholder.com/150"}
+                src={users?.photoURL || 'no photo'}
                 alt="Profile"
                 className="w-32 h-32 rounded-3xl object-cover border-4 border-base-100 shadow-xl group-hover:brightness-90 transition-all"
               />
@@ -93,7 +126,7 @@ const handleLogoutClick = () => {
 
             <div className="mt-4 sm:mt-16 text-center sm:text-left flex-1">
               <h2 className="text-3xl font-black text-base-content tracking-tight">
-                {user?.displayName}
+                {users?.displayName}
               </h2>
               <div className="badge badge-success badge-outline mt-1 px-4 py-3 font-semibold">
                 Verified Account
@@ -109,7 +142,7 @@ const handleLogoutClick = () => {
               </div>
               <div>
                 <p className="text-xs text-base-content/50 font-bold uppercase tracking-wider">Email Address</p>
-                <p className="text-sm font-medium">{user?.email}</p>
+                <p className="text-sm font-medium">{users?.email}</p>
               </div>
             </div>
 
@@ -119,7 +152,7 @@ const handleLogoutClick = () => {
               </div>
               <div>
                 <p className="text-xs text-base-content/50 font-bold uppercase tracking-wider">Phone Number</p>
-                <p className="text-sm font-medium">{user?.phone || "Not Provided"}</p>
+                <p className="text-sm font-medium">{users?.phone || "Not Provided"}</p>
               </div>
             </div>
           </div>
@@ -127,7 +160,7 @@ const handleLogoutClick = () => {
           {/* Action Buttons */}
           <div className="flex flex-wrap gap-4 mt-10">
             <button
-              onClick={() => setOpenProfile(true)}
+              onClick={() =>handleOpen(users) }
               className="btn btn-primary btn-md rounded-2xl normal-case gap-2 px-8"
             >
               <FaEdit /> Edit Profile

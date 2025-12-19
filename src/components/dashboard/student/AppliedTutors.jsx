@@ -52,19 +52,7 @@ const AppliedTutors = () => {
       }
     });
   };
-  if(tuition.length === 0) {
-    return <>
-    <EmptyState
-  icon={FaChalkboardTeacher}
-  title="No Tutor Applied"
-  description="Tutor haven't applied to any tuitions yet."
-  primaryAction={{
-    label: "MY Tuition",
-    to: "/dashboard/my-tuitions",
-  }}
-/>;
-    </>
-  }
+ 
 
   const handlePayment = async (app) => {
     const paymentInfo = {
@@ -84,6 +72,20 @@ const AppliedTutors = () => {
     window.location.assign(res.data.url);
   };
 
+
+     if(tuition.length === 0) {
+    return <>
+    <EmptyState
+  icon={FaChalkboardTeacher}
+  title="No Tutor Applied"
+  description="Tutor haven't applied to any tuitions yet."
+  primaryAction={{
+    label: "MY Tuition",
+    to: "/dashboard/my-tuitions",
+  }}
+/>;
+    </>
+  }
   return (
     <div className="p-6 container mx-auto">
       <h1 className="text-2xl font-semibold mb-6">

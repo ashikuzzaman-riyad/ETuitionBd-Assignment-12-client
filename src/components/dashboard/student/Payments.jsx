@@ -62,7 +62,7 @@ if(payment.length === 0) {
                 <td className="py-3 px-4">{payment.studentName}</td>
                 <td className="py-3 px-4">{payment.studentEmail}</td>
                 <td className="py-3 px-4">{payment.paymentStatus}</td>
-                <td className="py-3 px-4">{payment.studentSubject}</td>
+                <td className="py-3 px-4">{payment.studentSubjects}</td>
                 <td className="py-3 px-4">{payment.paidAt}</td>
 
                 <td

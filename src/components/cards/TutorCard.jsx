@@ -1,55 +1,35 @@
-import React, { useEffect, useState } from 'react';
-import useAxiosSecure from '../hooks/useAxiosSecure';
+import React, { useEffect, useState } from "react";
+import useAxiosSecure from "../hooks/useAxiosSecure";
 
+import EmptyState from "../shared/EmptyState";
 
+import { GiTeacher } from "react-icons/gi";
 
 const TutorCard = () => {
-//     const tutors = [
-//   {
-//     role: "tutor",
-//     email: "tutor@gmail.com",
-//     displayName: "Riyad Hossen",
-//     photoURL: "https://i.ibb.co/gFLYDwHV/615-6158403-github-logo-png-clipart-github-c.png",
-//     phone: "01305634672",
-//     createdAt: "2025-12-10T11:00:55.280Z"
-//   },
-//   {
-//     role: "tutor",
-//     email: "siam@gmail.com",
-//     displayName: "Siam Khan",
-//     photoURL: "https://i.ibb.co/gFLYDwHV/615-6158403-github-logo-png-clipart-github-c.png",
-//     phone: "01711000000",
-//     createdAt: "2025-12-09T09:20:55.280Z"
-//   },
-//   {
-//     role: "tutor",
-//     email: "mim@gmail.com",
-//     displayName: "Afsana Mim",
-//     photoURL: "https://i.ibb.co/gFLYDwHV/615-6158403-github-logo-png-clipart-github-c.png",
-//     phone: "01489000000",
-//     createdAt: "2025-12-08T13:40:55.280Z"
-//   },
-//   {
-//     role: "tutor",
-//     email: "tanvir@gmail.com",
-//     displayName: "Tanvir Hasan",
-//     photoURL: "https://i.ibb.co/gFLYDwHV/615-6158403-github-logo-png-clipart-github-c.png",
-//     phone: "01570000000",
-//     createdAt: "2025-12-07T10:20:55.280Z"
-//   }
-// ];
+  
 
-const [tutors, setTutors] = useState([]);
-const axiosSecure = useAxiosSecure()
- const tutor = tutors.slice(0, 8)
+  const [tutors, setTutors] = useState([]);
+  const axiosSecure = useAxiosSecure();
+  const tutor = tutors.slice(0, 8);
   useEffect(() => {
-   axiosSecure.get("/users/tutors")
-      .then(res => setTutors(res.data));
+    axiosSecure.get("/users/tutors").then((res) => setTutors(res.data));
   }, [axiosSecure]);
-  console.log(tutors)
-
+  if (tutor.length === 0) {
     return (
-         <div className="grid grid-cols-1 container mx-auto sm:grid-cols-2 lg:grid-cols-4 gap-6 p-6">
+      <div className="my-8">
+        <EmptyState
+          icon={GiTeacher}
+          title="No Tutor Available "
+          description="No Tutor available at the moment.
+Please check back later or try adjusting your filters!"
+        />
+        ;
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-1 container mx-auto sm:grid-cols-2 lg:grid-cols-4 gap-6 p-6">
       {tutor.map((tutor, index) => (
         <div
           key={index}
@@ -87,7 +67,7 @@ const axiosSecure = useAxiosSecure()
         </div>
       ))}
     </div>
-    );
+  );
 };
 
 export default TutorCard;
