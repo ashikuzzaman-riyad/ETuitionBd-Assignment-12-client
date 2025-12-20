@@ -5,13 +5,14 @@ import { useQuery } from "@tanstack/react-query";
 
 import EmptyState from "../../shared/EmptyState";
 import { FaPersonDotsFromLine } from "react-icons/fa6";
+import Loading from "../../shared/Loading";
 
 const MyApplications = () => {
  
 
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
-  const { data: tuition = [], refetch } = useQuery({
+  const { data: tuition = [], isLoading } = useQuery({
     queryKey: ["myApplication", user?.email],
     queryFn: async () => {
       const res = await axiosSecure.get(
@@ -20,6 +21,7 @@ const MyApplications = () => {
       return res.data;
     },
   });
+  if(isLoading) return <Loading></Loading>
  
    if(tuition.length === 0) {
     return <>

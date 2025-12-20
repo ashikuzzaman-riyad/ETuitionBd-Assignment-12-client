@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 
 import EmptyState from "../../shared/EmptyState";
 import { GrStatusUnknownSmall } from "react-icons/gr";
+import Loading from "../../shared/Loading";
 
 const OngoingTuitions = () => {
   const [selectedApp, setSelectedApp] = useState(null);
@@ -13,7 +14,7 @@ const OngoingTuitions = () => {
 
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
-  const { data: tuition = [], refetch } = useQuery({
+  const { data: tuition = [], refetch, isLoading } = useQuery({
     queryKey: ["myApplication", user?.email],
     queryFn: async () => {
       const res = await axiosSecure.get(
@@ -82,7 +83,7 @@ const OngoingTuitions = () => {
         }
       });
     };
-    
+    if(isLoading) return <Loading></Loading>
     if(tuition.length === 0) {
       return <>
       <EmptyState

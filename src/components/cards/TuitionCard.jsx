@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import EmptyState from "../shared/EmptyState";
 import { MdLocalPostOffice } from "react-icons/md";
 import { Link } from "react-router";
+import Loading from "../shared/Loading";
 
 // Filter bar component
 const TuitionFilterBar = ({ filters, setFilters }) => {
@@ -69,7 +70,7 @@ const TuitionCard = ({ email }) => {
     Object.fromEntries(Object.entries(filters).filter(([_, v]) => v))
   ).toString();
 
-  const { data: tuition = [] } = useQuery({
+  const { data: tuition = [], isLoading } = useQuery({
     queryKey: ["tuitions", filters],
     queryFn: async () => {
       const res = await axiosSecure.get(`/new-tuitions?${queryString}`);
@@ -77,7 +78,7 @@ const TuitionCard = ({ email }) => {
     },
   });
 
-  
+  if(isLoading) return<Loading></Loading>
   
 
   return (

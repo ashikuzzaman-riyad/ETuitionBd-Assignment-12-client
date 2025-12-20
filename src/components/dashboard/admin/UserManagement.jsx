@@ -8,11 +8,12 @@ import { Link } from "react-router";
 import { Eye } from "lucide-react";
 import { FaUserAltSlash, FaUserCog } from "react-icons/fa";
 import EmptyState from "../../shared/EmptyState";
+import Loading from "../../shared/Loading";
 
 const UsersManagement = () => {
   const [textSearch, setTextSearch] = useState("");
   const axiosSecure = useAxiosSecure();
-  const { data: user = [], refetch } = useQuery({
+  const { data: user = [], refetch, isLoading } = useQuery({
     queryKey: ["all-users", textSearch],
     queryFn: async () => {
       const res = await axiosSecure.get(`/all-users?searchText=${textSearch}`);
@@ -138,7 +139,7 @@ const UsersManagement = () => {
   };
 
   
-  
+  if(isLoading) return <Loading></Loading>
 
     
   

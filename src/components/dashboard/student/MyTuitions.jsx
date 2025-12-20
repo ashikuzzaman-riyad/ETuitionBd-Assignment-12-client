@@ -10,6 +10,7 @@ import Swal from "sweetalert2";
 import { Link } from "react-router";
 import { useForm } from "react-hook-form";
 import EmptyState from "../../shared/EmptyState";
+import Loading from "../../shared/Loading";
 
 const MyTuitions = () => {
    const { register, handleSubmit, reset } = useForm();
@@ -32,7 +33,7 @@ const MyTuitions = () => {
     "Economics",
   ];
   const classOptions = Array.from({ length: 10 }, (_, i) => i + 1);
-  const { data: tuition = [], refetch } = useQuery({
+  const { data: tuition = [], refetch, isLoading } = useQuery({
     queryKey: ["myTuitions", user?.email],
     queryFn: async () => {
       const res = await axiosSecure.get(`/new-tuitions?email=${user.email}`);
@@ -121,6 +122,7 @@ const MyTuitions = () => {
       });
     }
   };
+   if(isLoading) return <Loading></Loading>
   if(tuition.length === 0) {
     return <>
     <EmptyState
@@ -137,189 +139,170 @@ const MyTuitions = () => {
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="overflow-x-auto shadow-xl rounded-lg">
-        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-          {/* Table Header */}
-          <thead className="bg-gray-50 dark:bg-gray-700">
-            <tr>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider"
-              >
-                Student Name
-              </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider hidden sm:table-cell"
-              >
-                Subject & Class
-              </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider hidden lg:table-cell"
-              >
-                Location
-              </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider"
-              >
-                Budget
-              </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider"
-              >
-                Status
-              </th>
-              <th
-                scope="col"
-                className="px-6 py-3 text-center text-xs font-bold text-gray-500 dark:text-gray-300 uppercase tracking-wider"
-              >
-                Actions
-              </th>
-            </tr>
-          </thead>
+   <div className="container mx-auto px-3 sm:px-4 lg:px-6 py-4">
 
-          {/* Table Body */}
-          <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-            {tuition.map((student, index) => (
-              <tr
-                key={index}
-                className="hover:bg-gray-50 dark:hover:bg-gray-700 transition duration-150"
-              >
-                {/* Student Name and Contact */}
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900 dark:text-white">
-                    {student.studentName}
-                  </div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">
-                    {student.studentEmail}
-                  </div>
-                </td>
+  {/* ================= TABLE VIEW (Tablet & Desktop) ================= */}
+  <div className="hidden md:block overflow-x-auto shadow-xl rounded-lg">
+    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+      {/* Table Header */}
+      <thead className="bg-gray-50 dark:bg-gray-700">
+        <tr>
+          <th className="px-6 py-3 text-left text-xs font-bold uppercase">
+            Student Name
+          </th>
+          <th className="px-6 py-3 text-left text-xs font-bold uppercase hidden sm:table-cell">
+            Subject & Class
+          </th>
+          <th className="px-6 py-3 text-left text-xs font-bold uppercase hidden lg:table-cell">
+            Location
+          </th>
+          <th className="px-6 py-3 text-left text-xs font-bold uppercase">
+            Budget
+          </th>
+          <th className="px-6 py-3 text-left text-xs font-bold uppercase">
+            Status
+          </th>
+          <th className="px-6 py-3 text-center text-xs font-bold uppercase">
+            Actions
+          </th>
+        </tr>
+      </thead>
 
-                {/* Subject & Class (Hidden on small screens) */}
-                <td className="px-6 py-4 whitespace-nowrap hidden sm:table-cell">
-                  <div className="text-sm text-gray-900 dark:text-gray-300">
-                    {student.studentSubjects}
-                  </div>
-                  <div className="text-xs text-gray-500 dark:text-gray-400">
-                    Class: {student.studentClass}
-                  </div>
-                </td>
-
-                {/* Location (Hidden on medium/small screens) */}
-                <td className="px-6 py-4 whitespace-nowrap hidden lg:table-cell">
-                  <div className="text-sm text-gray-900 dark:text-gray-300">
-                    {student.studentLocation}
-                  </div>
-                </td>
-
-                {/* Budget */}
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-semibold text-green-600 dark:text-green-400">
-                    ${student.studentBudget}
-                  </div>
-                </td>
-
-                {/* Status Badge */}
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span
-                    className={`
-      px-3 py-1.5 inline-flex text-xs leading-5 font-bold rounded-full 
-      ${
-        student.status === "pending"
-          ? "bg-yellow-500 text-yellow-900"
-          : student.status === "approved"
-          ? "bg-green-600 text-white"
-          : student.status === "rejected"
-          ? "bg-red-500 text-white"
-          : "bg-gray-300 text-gray-800"
-      }
-    `}
-                  >
-                    {student.status}
-                  </span>
-                </td>
-
-                {/* Actions (Edit and Delete) */}
-                <td className="px-6 py-4 whitespace-nowrap flex text-center text-sm font-medium">
-                  {/* Edit Button */}
-                  <Link>
-                    <button
-                      onClick={() => openModal(student)}
-                      className="text-indigo-600 flex  justify-center items-center gap-1 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-4 transition duration-150"
-                      title="Edit Record"
-                    >
-                      <span>
-                        <FaEdit size={25} />
-                      </span>
-                      <span className="sr-only sm:not-sr-only"> Edit</span>
-                    </button>
-                  </Link>
-
-                  {/* Delete Button */}
-                  <button
-                    onClick={() => handleParcelDelete(student._id)}
-                    className="text-red-600 hover:text-red-900 dark:text-red-400 flex gap-1 justify-center items-center dark:hover:text-red-300 transition duration-150"
-                    title="Delete Record"
-                  >
-                    <span>
-                      <MdDeleteOutline size={25} />
-                    </span>
-                    <span className="sr-only sm:not-sr-only"> Delete</span>
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      {/* You can open the modal using document.getElementById('ID').showModal() method */}
-
-      <dialog ref={tuitionRef} className="modal">
-        <div className="modal-box">
-          <form method="dialog">
-            {/* if there is a button in form, it will close the modal */}
-            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-              ✕
-            </button>
-          </form>
-           <div className="max-w-xl mx-auto p-6 bg-white shadow-lg rounded-xl">
-      <h2 className="text-2xl font-bold mb-5">Update Tuition</h2>
-
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div>
-          {/* Class (Required) */}
-          <div>
-            <label className="block text-sm font-medium mb-1">
-              Subjects (Choose one)
-            </label>
-            <select
-              // Validation remains active here
-              {...register("studentSubjects")}
-              className="w-full border rounded p-2"
-              
-            >
-              <option value="">Select one subject</option>
-              {subjects.map((sub) => (
-                <option key={sub} value={sub}>
-                  {sub}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-        {/* class */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Class</label>
-          <select
-            // Validation remains active here
-            {...register("studentClass")}
-            className="w-full border rounded p-2"
+      {/* Table Body */}
+      <tbody className="bg-white dark:bg-gray-800 divide-y">
+        {tuition.map((student) => (
+          <tr
+            key={student._id}
+            className="hover:bg-gray-50 dark:hover:bg-gray-700"
           >
-            <option value="">Select class (1-10)</option>
+            {/* Student */}
+            <td className="px-6 py-4">
+              <div className="font-medium">{student.studentName}</div>
+              <div className="text-xs text-gray-500">
+                {student.studentEmail}
+              </div>
+            </td>
+
+            {/* Subject */}
+            <td className="px-6 py-4 hidden sm:table-cell">
+              <div>{student.studentSubjects}</div>
+              <div className="text-xs text-gray-500">
+                Class: {student.studentClass}
+              </div>
+            </td>
+
+            {/* Location */}
+            <td className="px-6 py-4 hidden lg:table-cell">
+              {student.studentLocation}
+            </td>
+
+            {/* Budget */}
+            <td className="px-6 py-4 font-semibold text-green-600">
+              ${student.studentBudget}
+            </td>
+
+            {/* Status */}
+            <td className="px-6 py-4">
+              <span
+                className={`px-3 py-1 text-xs font-bold rounded-full
+                  ${
+                    student.status === "pending"
+                      ? "bg-yellow-400 text-black"
+                      : student.status === "approved"
+                      ? "bg-green-600 text-white"
+                      : "bg-red-600 text-white"
+                  }`}
+              >
+                {student.status}
+              </span>
+            </td>
+
+            {/* Actions */}
+            <td className="px-6 py-4">
+              <div className="flex flex-col sm:flex-row justify-center gap-2">
+                <button
+                  onClick={() => openModal(student)}
+                  className="text-indigo-600 flex items-center gap-1"
+                >
+                  <FaEdit /> Edit
+                </button>
+                <button
+                  onClick={() => handleParcelDelete(student._id)}
+                  className="text-red-600 flex items-center gap-1"
+                >
+                  <MdDeleteOutline /> Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  {/* ================= MOBILE CARD VIEW ================= */}
+  <div className="md:hidden space-y-4">
+    {tuition.map((student) => (
+      <div
+        key={student._id}
+        className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow"
+      >
+        <div className="font-bold text-lg">{student.studentName}</div>
+        <p className="text-xs text-gray-500">{student.studentEmail}</p>
+
+        <div className="mt-2 text-sm space-y-1">
+          <p><b>Subject:</b> {student.studentSubjects}</p>
+          <p><b>Class:</b> {student.studentClass}</p>
+          <p><b>Location:</b> {student.studentLocation}</p>
+          <p className="text-green-600 font-semibold">
+            Budget: ${student.studentBudget}
+          </p>
+        </div>
+
+        <div className="flex justify-between mt-4">
+          <button
+            onClick={() => openModal(student)}
+            className="text-indigo-600 flex items-center gap-1"
+          >
+            <FaEdit /> Edit
+          </button>
+          <button
+            onClick={() => handleParcelDelete(student._id)}
+            className="text-red-600 flex items-center gap-1"
+          >
+            <MdDeleteOutline /> Delete
+          </button>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  {/* ================= MODAL ================= */}
+  <dialog ref={tuitionRef} className="modal modal-bottom sm:modal-middle">
+    <div className="modal-box w-11/12 sm:w-full max-w-xl">
+      <form method="dialog">
+        <button className="btn btn-sm btn-circle absolute right-2 top-2">
+          ✕
+        </button>
+      </form>
+
+      <h2 className="text-xl font-bold mb-4">Update Tuition</h2>
+
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+        <div>
+          <label className="text-sm font-medium">Subject</label>
+          <select {...register("studentSubjects")} className="w-full border p-2 rounded">
+            <option value="">Select subject</option>
+            {subjects.map((sub) => (
+              <option key={sub} value={sub}>{sub}</option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="text-sm font-medium">Class</label>
+          <select {...register("studentClass")} className="w-full border p-2 rounded">
+            <option value="">Select class</option>
             {classOptions.map((c) => (
               <option key={c} value={c}>{`Class ${c}`}</option>
             ))}
@@ -327,7 +310,7 @@ const MyTuitions = () => {
         </div>
 
         <div>
-          <label className="block font-semibold">Budget</label>
+          <label className="text-sm font-medium">Budget</label>
           <input
             type="number"
             {...register("studentBudget")}
@@ -336,7 +319,7 @@ const MyTuitions = () => {
         </div>
 
         <div>
-          <label className="block font-semibold">Location</label>
+          <label className="text-sm font-medium">Location</label>
           <input
             {...register("studentLocation")}
             className="w-full border px-3 py-2 rounded"
@@ -345,15 +328,15 @@ const MyTuitions = () => {
 
         <button
           type="submit"
-          className="bg-indigo-600 text-white px-4 py-2 rounded w-full mt-4"
+          className="bg-indigo-600 text-white w-full py-2 rounded mt-3"
         >
           Update Tuition
         </button>
       </form>
     </div>
-        </div>
-      </dialog>
-    </div>
+  </dialog>
+</div>
+
   );
 };
 

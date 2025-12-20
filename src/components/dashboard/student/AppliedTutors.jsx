@@ -7,13 +7,14 @@ import Swal from "sweetalert2";
 
 import EmptyState from "../../shared/EmptyState";
 import { FaChalkboardTeacher } from "react-icons/fa";
+import Loading from "../../shared/Loading";
 
 const AppliedTutors = () => {
  
 
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
-  const { data: tuition = [], refetch } = useQuery({
+  const { data: tuition = [], refetch, isLoading } = useQuery({
     queryKey: ["myApplication", user?.email],
     queryFn: async () => {
       const res = await axiosSecure.get(
@@ -71,7 +72,8 @@ const AppliedTutors = () => {
     console.log(res.data);
     window.location.assign(res.data.url);
   };
-
+ 
+  if(isLoading) return <Loading></Loading>
 
      if(tuition.length === 0) {
     return <>

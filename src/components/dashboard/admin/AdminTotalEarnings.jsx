@@ -4,6 +4,7 @@ import { DollarSign, Users, CreditCard } from "lucide-react";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { MdPayment } from "react-icons/md";
 import EmptyState from "../../shared/EmptyState";
+import Loading from "../../shared/Loading";
 
 export default function AdminTotalEarnings() {
   const [payments, setPayments] = useState([]);
@@ -26,7 +27,7 @@ export default function AdminTotalEarnings() {
   }, [axiosSecure]);
 
   if (loading) {
-    return <p className="p-6">Loading admin earnings...</p>;
+    return <Loading></Loading>
   }
 
   // calculations

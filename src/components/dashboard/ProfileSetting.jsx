@@ -1,4 +1,4 @@
-import { useState,  } from "react";
+import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import Loading from "../shared/Loading";
 import { useForm } from "react-hook-form";
@@ -9,96 +9,113 @@ import Swal from "sweetalert2";
 
 import useAxiosSecure from "../hooks/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
-
+import axios from "axios";
 
 const ProfileSetting = () => {
-  const [userId, SetUserId] = useState(null)
+  const [userId, setUserId] = useState(null);
+  const [profileImg, setProfileImg] = useState(null); // store file
   const [openProfile, setOpenProfile] = useState(false);
-   const [openPassword, setOpenPassword] = useState(false);
+  const [openPassword, setOpenPassword] = useState(false);
+
   const { user, loading, updateUser, setLoading, logOut } = useAuth();
   const { register, handleSubmit } = useForm();
- const axiosSecure = useAxiosSecure()
- 
- 
+  const axiosSecure = useAxiosSecure();
 
-   const { data: userssss = [], isLoading, refetch } = useQuery({
-  queryKey: ["user", user?.email],
-  
-  queryFn: async () => {
-    const res = await axiosSecure.get(`/users?email=${user.email}`);
-    return res.data;
-  },
-});
-const users = userssss
- 
-const handleOpen =(users) =>{
-setOpenProfile(true)
- console.log(users)
-SetUserId(users)
-}
+  // Fetch user data
+  const { data: userssss = [], isLoading, refetch } = useQuery({
+    queryKey: ["user", user?.email],
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/users?email=${user.email}`);
+      return res.data;
+    },
+  });
+  const users = userssss;
 
-  const onSubmit = async (data) => {
-  if (!userId?._id) {
-    Swal.fire("Error", "User ID not found", "error");
-    return;
-  }
-
-  const statusInfo = {
-    displayName: data.name,
-    photoURL: data.photoURL,
+  // Open modal and set user
+  const handleOpen = (users) => {
+    setOpenProfile(true);
+    setUserId(users);
   };
 
-  const res = await axiosSecure.patch(
-    `/users/${userId._id}`,
-    statusInfo
-  );
-
-  if (res.data.modifiedCount > 0) {
-    Swal.fire({
-      icon: "success",
-      title: "Updated Successfully!",
-      timer: 1500,
-      showConfirmButton: false,
-    });
-    refetch();
-    setOpenProfile(false);
-  }
-
-  await updateUser(statusInfo);
-  setLoading (false)
-};
-
- 
- 
-const handleLogoutClick = () => {
-  Swal.fire({
-    title: "Are you sure?",
-    text: "You will need to log in again to access your account.",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#ef4444", 
-    cancelButtonColor: "#6b7280",  
-    confirmButtonText: "Logout",
-    cancelButtonText: "Cancel",
-    reverseButtons: true,
-  }).then((result) => {
-    if (result.isConfirmed) {
-      logOut();
-      Swal.fire({
-        title: "Logged out!",
-        icon: "success",
-        timer: 1500,
-        showConfirmButton: false,
-      });
+  // Form submit handler
+  const onSubmit = async (data) => {
+    if (!userId?._id) {
+      Swal.fire("Error", "User ID not found", "error");
+      return;
     }
-  });
-};
 
+    setLoading(true);
 
- if (loading) return <Loading></Loading>;
+    try {
+      let photoURL = users?.photoURL; // default to existing URL
+
+      // Upload image if selected
+      if (profileImg) {
+        const formData = new FormData();
+        formData.append("image", profileImg);
+
+        const image_API_URL = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_img_host}`;
+        const uploadRes = await axios.post(image_API_URL, formData);
+        photoURL = uploadRes.data.data.url;
+      }
+
+      const statusInfo = {
+        displayName: data.name,
+        photoURL,
+      };
+
+      const res = await axiosSecure.patch(`/users/${userId._id}`, statusInfo);
+
+      if (res.data.modifiedCount > 0) {
+        Swal.fire({
+          icon: "success",
+          title: "Updated Successfully!",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+        refetch();
+        setOpenProfile(false);
+      }
+
+      await updateUser(statusInfo);
+    } catch (error) {
+      console.error(error);
+      Swal.fire("Error", "Something went wrong", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Logout handler
+  const handleLogoutClick = () => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You will need to log in again to access your account.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#ef4444",
+      cancelButtonColor: "#6b7280",
+      confirmButtonText: "Logout",
+      cancelButtonText: "Cancel",
+      reverseButtons: true,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        logOut();
+        Swal.fire({
+          title: "Logged out!",
+          icon: "success",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      }
+    });
+  };
+
+  if (loading || isLoading) return <Loading />;
+
   return (
-     <div className="min-h-[80vh] flex items-center justify-center p-6 relative overflow-hidden">
-      {/* Decorative Background Blobs */}
+    <div className="min-h-[80vh] flex items-center justify-center p-6 relative overflow-hidden">
+      {/* Decorative Background */}
       <div className="absolute top-0 -left-4 w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
       <div className="absolute bottom-0 -right-4 w-72 h-72 bg-secondary/10 rounded-full blur-3xl" />
 
@@ -112,12 +129,12 @@ const handleLogoutClick = () => {
           <div className="relative -mt-16 mb-6 flex flex-col items-center sm:items-start sm:flex-row sm:gap-6">
             <div className="relative group">
               <img
-                src={users?.photoURL || 'no photo'}
+                src={users?.photoURL || "https://via.placeholder.com/150"}
                 alt="Profile"
                 className="w-32 h-32 rounded-3xl object-cover border-4 border-base-100 shadow-xl group-hover:brightness-90 transition-all"
               />
-              <button 
-                onClick={() => setOpenProfile(true)}
+              <button
+                onClick={() => handleOpen(users)}
                 className="absolute bottom-2 right-2 p-2 bg-white text-green-600 rounded-xl shadow-lg hover:scale-110 transition-transform"
               >
                 <FaCamera size={14} />
@@ -141,7 +158,9 @@ const handleLogoutClick = () => {
                 <FaEnvelope />
               </div>
               <div>
-                <p className="text-xs text-base-content/50 font-bold uppercase tracking-wider">Email Address</p>
+                <p className="text-xs text-base-content/50 font-bold uppercase tracking-wider">
+                  Email Address
+                </p>
                 <p className="text-sm font-medium">{users?.email}</p>
               </div>
             </div>
@@ -151,8 +170,12 @@ const handleLogoutClick = () => {
                 <FaPhone />
               </div>
               <div>
-                <p className="text-xs text-base-content/50 font-bold uppercase tracking-wider">Phone Number</p>
-                <p className="text-sm font-medium">{users?.phone || "Not Provided"}</p>
+                <p className="text-xs text-base-content/50 font-bold uppercase tracking-wider">
+                  Phone Number
+                </p>
+                <p className="text-sm font-medium">
+                  {users?.phone || "Not Provided"}
+                </p>
               </div>
             </div>
           </div>
@@ -160,7 +183,7 @@ const handleLogoutClick = () => {
           {/* Action Buttons */}
           <div className="flex flex-wrap gap-4 mt-10">
             <button
-              onClick={() =>handleOpen(users) }
+              onClick={() => handleOpen(users)}
               className="btn btn-primary btn-md rounded-2xl normal-case gap-2 px-8"
             >
               <FaEdit /> Edit Profile
@@ -190,7 +213,9 @@ const handleLogoutClick = () => {
             <h3 className="text-2xl font-black mb-6">Update Profile</h3>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               <div className="form-control">
-                <label className="label font-bold text-xs uppercase tracking-widest opacity-60">Full Name</label>
+                <label className="label font-bold text-xs uppercase tracking-widest opacity-60">
+                  Full Name
+                </label>
                 <input
                   {...register("name")}
                   className="input input-bordered bg-base-200 border-none rounded-xl focus:ring-2 focus:ring-green-500"
@@ -199,17 +224,31 @@ const handleLogoutClick = () => {
               </div>
 
               <div className="form-control">
-                <label className="label font-bold text-xs uppercase tracking-widest opacity-60">Photo URL</label>
+                <label className="label font-bold text-xs uppercase tracking-widest opacity-60">
+                  Upload Photo
+                </label>
                 <input
-                  {...register("photoURL")}
-                  className="input input-bordered bg-base-200 border-none rounded-xl focus:ring-2 focus:ring-green-500"
-                  placeholder="Image link"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setProfileImg(e.target.files[0])}
+                  className="file-input file-input-bordered file-input-primary rounded-xl w-full"
                 />
               </div>
 
               <div className="modal-action gap-3">
-                <button type="button" className="btn btn-ghost rounded-xl" onClick={() => setOpenProfile(false)}>Cancel</button>
-                <button type="submit" className="btn btn-primary rounded-xl px-8 shadow-lg shadow-green-500/20">Save Changes</button>
+                <button
+                  type="button"
+                  className="btn btn-ghost rounded-xl"
+                  onClick={() => setOpenProfile(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="btn btn-primary rounded-xl px-8 shadow-lg shadow-green-500/20"
+                >
+                  Save Changes
+                </button>
               </div>
             </form>
           </div>

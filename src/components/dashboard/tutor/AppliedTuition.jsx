@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import EmptyState from "../../shared/EmptyState";
 
 import { BsBookHalf } from "react-icons/bs";
+import Loading from "../../shared/Loading";
 
 const AppliedTuition = () => {
   const tutorModalRef = useRef()
@@ -16,7 +17,7 @@ const AppliedTuition = () => {
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
   const [tuition, setTuition] = useState(null)
   // Fetch available tuition posts
-  const { data: tuitions = [], refetch } = useQuery({
+  const { data: tuitions = [], refetch, isLoading } = useQuery({
     queryKey: ["availableTuitions"],
     queryFn: async () => {
       const res = await axiosSecure.get(`/new-tuitions?status=approve`);
@@ -72,6 +73,7 @@ const AppliedTuition = () => {
     }
     
   }
+  if(isLoading) return <Loading></Loading>
 
   if(tuitions.length === 0){
     return <>
