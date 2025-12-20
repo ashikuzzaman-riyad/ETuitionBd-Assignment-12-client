@@ -139,7 +139,7 @@ const UsersManagement = () => {
   };
 
   
-  if(isLoading) return <Loading></Loading>
+
 
     
   
